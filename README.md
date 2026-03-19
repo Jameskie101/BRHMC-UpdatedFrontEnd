@@ -31,10 +31,10 @@ Since this project uses a `.sh` setup script, it is best to use **Git Bash** ins
 ## Installation
 
 ### Automatic Setup (Recommended)
-If you are using a Bash-friendly terminal (Git Bash, WSL, or Mac/Linux), run the included setup script(remove the forward slahes):
-// ```bash
-// chmod +x setup.sh
-// ./setup.sh
+If you are using a Bash-friendly terminal (Git Bash, WSL, or Mac/Linux), run the included setup script(remove the forward slash):
+ // ```bash
+ chmod +x setup.sh
+ ./setup.sh
 
 
 ### Manual Setup (Windows CMD/PowerShell)
