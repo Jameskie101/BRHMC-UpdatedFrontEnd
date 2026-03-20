@@ -29,3 +29,5 @@ Thumbs.db
 
 # Testing
 .phpunit.result.cache
+
+PROJECT_SETUP_REPORT.txt

@@ -1,76 +1,126 @@
 # BRHMC-iHOMIS Project
 
-This project is built using **Laravel** (PHP) and **React** (JavaScript/Vite).
+A professional Healthcare Management System built with React, Vite, Laravel, MySQL, and Bulma CSS.
+
+## Tech Stack
+
+- **Frontend**: React 18.2.0 + Vite 7.0.7
+- **Backend**: Laravel 12.x + PHP 8.2+
+- **Database**: MySQL 5.7+
+- **UI**: Bulma CSS 1.0.0
 
 ## Prerequisites
 
-Before setting up the project, ensure you have the following installed on your system:
+- PHP 8.2+ (with `zip` extension enabled)
+- Composer 2.0+
+- Node.js 18+ & npm 10+
+- MySQL 5.7+
 
-* **Git**: For version control and running Bash scripts.
-* **PHP 8.2+**: Required for local setup (ensure the `zip` extension is enabled in `php.ini`).
-* **Composer**: PHP Package Manager.
-* **Node.js & npm**: LTS Version recommended for React/Vite.
-* **Docker Desktop**: (Optional) For containerized development using Laravel Sail.
-* **XAMPP**: (Optional) For traditional local Apache/MySQL setup.
+## Quick Setup
 
-## VS Code Setup
+```bash
+git clone <repository-url>
+cd BRHMC-iHOMIS
 
-To get the best development experience, we recommend installing these extensions:
+# Automated (Mac/Linux)
+chmod +x setup.sh
+./setup.sh
 
-1.  **PHP Intelephense** (For code intelligence)
-2.  **ESLint / Prettier** (For React code formatting)
-3.  **Laravel Extra Intellisense**
-4.  **Vite** (For frontend tooling)
+# Or manual run
+composer install
+npm install
+cd backend && cp .env.example .env && cd ..
+php artisan key:generate
+php artisan migrate
+```
 
-### Setting the Default Terminal
-Since this project uses a `.sh` setup script, it is best to use **Git Bash** inside VS Code:
-1.  Open the Terminal (`Ctrl + ` `).
-2.  Click the `+` dropdown and select **Select Default Profile**.
-3.  Choose **Git Bash**.
+## Running the Application
 
-## Installation
+**Terminal 1 - Backend:**
+```bash
+cd backend
+php artisan serve
+# Runs at http://127.0.0.1:8000
+```
 
-### Automatic Setup (Recommended)
-If you are using a Bash-friendly terminal (Git Bash, WSL, or Mac/Linux), run the included setup script(remove the forward slahes):
-// ```bash
-// chmod +x setup.sh
-// ./setup.sh
+**Terminal 2 - Frontend:**
+```bash
+npm run dev
+# Runs at http://127.0.0.1:5173
+```
 
+Open `http://localhost:8000`
 
-### Manual Setup (Windows CMD/PowerShell)
-If you cannot run .sh files, or you want to install dependencies globally follow these steps manually in order:
+## Project Structure
 
-1. Install PHP Dependencies:
-    composer install
-2. Install Frontend Dependencies:
-    npm install
-3. Environment Configuration:
-    cp .env.example .env
-4. Generate App Key:
-    php artisan key:generate
-5. Database Migration:
-    php artisan migrate
-6. Build Assets:
-    npm run build
+```
+BRHMC-iHOMIS/
+├── src/                    # React Frontend
+│   ├── app.jsx            # Main React component
+│   └── index.css          # Styles + Bulma
+├── backend/               # Laravel API
+│   ├── app/               # Application logic
+│   ├── routes/            # API & web routes
+│   ├── resources/views/   # Blade templates
+│   ├── database/          # Migrations
+│   └── .env               # Environment config
+├── public/                # Static assets
+├── vite.config.js         # Vite configuration
+├── package.json           # Frontend dependencies
+├── setup.sh               # Setup script
+└── README.md             # This file
+```
 
-### Running the Application
+## Commands
 
-### Local (XAMPP/Manual)
-You will need two terminal windows running simultaneously:
-1. Backend: php artisan serve (Runs at http://127.0.0.1:8000)
-2. Frontend: npm run dev (Hot-reloading for React)
+```bash
+npm run dev        # Start frontend dev server
+npm run build      # Build for production
+php artisan serve  # Start backend server
+php artisan migrate       # Run database migrations
+php artisan tinker        # Interactive shell
+php artisan make:model ModelName    # Generate model
+php artisan make:controller ControllerName  # Generate controller
+```
 
-### Docker (Laravel Sail)
-1. Start Containers: ./vendor/bin/sail up -d
-2. Frontend: ./vendor/bin/sail npm run dev
-3. Stop: ./vendor/bin/sail stop
+## Database Setup
 
-### Troubleshooting
-- 7-Zip Error: If composer install fails due to zipping, ensure extension=zip is uncommented in your php.ini.
-- PowerShell Script Error: If npm fails to run, execute:
-    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-- Docker Connection: If the app cannot connect to the database in Docker, ensure your .env credentials match the docker-compose.yml settings (default user: sail, password: password).
+MySQL configuration in `backend/.env`:
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=
+DB_DATABASE=laravel
+```
 
-### Important: Environment Configuration
-- If using XAMPP/Local: Set DB_HOST=127.0.0.1 in your .env file.
-- If using Docker: Set DB_HOST=mysql in your .env file.
+Ensure MySQL is running and database exists, then run migrations.
+
+## Troubleshooting
+
+**Port 5173 already in use:**
+```bash
+Get-Process node | Stop-Process -Force  # Windows
+```
+
+**Database connection error:**
+- Ensure MySQL is running
+- Check credentials in `backend/.env`
+- Verify database exists
+
+**React app not loading:**
+- Hard refresh: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
+- Check browser console (F12) for errors
+- Verify both servers running on ports 8000 & 5173
+
+**PHP zip extension error:**
+- Uncomment `extension=zip` in `php.ini`
+- Restart your server
+
+## Next Steps
+
+1. Review the detailed documentation created for development reference
+2. Build your API endpoints in `backend/routes/api.php`
+3. Create React components in `src/` directory
+4. Both servers support hot-reload during development

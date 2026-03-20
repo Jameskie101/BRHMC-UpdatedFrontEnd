@@ -6,11 +6,13 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@inertiajs/react": "^2.0",
+        "@inertiajs/react": "^2.0.0",
         "@vitejs/plugin-react": "^4.2.0",
-        "laravel-vite-plugin": "^1.0",
+        "axios": "^1.11.0",
+        "bulma": "^1.0.0",
+        "laravel-vite-plugin": "^2.0.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "vite": "^5.0"
+        "vite": "^7.0.7"
     }
 }
