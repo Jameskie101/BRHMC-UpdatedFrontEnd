@@ -1,0 +1,34 @@
+@use "../base/colors";
+@use "../base/typography";
+@use "../utils/mixins";
+@use "../utils/variables";
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.footer {
+  &.inner-footer {
+    background-color: colors.$blue; 
+    padding: 0; 
+    .container {
+      // Optional for any container-specific overrides
+    }
+
+    p {
+      color: colors.$white; // Example: white text on blue background
+      @include mixins.respond-below(sm) {
+        font-size: typography.$font__size__14;
+      }
+    }
+  }
+}

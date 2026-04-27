@@ -1,0 +1,155 @@
+import { Link } from "react-router";
+import ImageWithBasePath from "../image-with-base-path";
+import { useState } from "react";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import { all_routes } from "@/routes/all_routes";
+
+const CustomOffcanvas = () => {
+  const images = [
+    {
+      src: "/src/assets/img/banner/about-img-1.jpg",
+    },
+    {
+      src: "/src/assets/img/banner/about-img-2.jpg",
+    },
+    {
+      src: "/src/assets/img/banner/about-img-3.jpg",
+    },
+  ];
+
+  const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState(0);
+
+  const openLightbox = (i: number) => {
+    setIndex(i);
+    setOpen(true);
+  };
+  return (
+    <>
+      {/* start offcanvas */}
+      <div
+        className="offcanvas offcanvas-offset offcanvas-end support_popup"
+        tabIndex={-1}
+        id="support_item"
+      >
+        <div className="offcanvas-header">
+          <Link to={all_routes.home}>
+            <ImageWithBasePath
+              src="assets/img/logo.svg"
+              alt="logo"
+              className="img-fluid logo"
+            />
+          </Link>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          >
+            <i className="isax isax-close-circle" />
+          </button>
+        </div>
+        <div className="offcanvas-body">
+          {/* Item 1 */}
+          <div className="about-popup-item">
+            <h3 className="title">Search Patient</h3>
+
+            <div className="about-img d-flex align-items-center gap-2 justify-content-between">
+              {images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => openLightbox(i)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                  }}
+                >
+                  <img src={img.src} alt={`about-${i}`} className="img-fluid" />
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Item 2 */}
+          <div className="about-popup-item">
+            <h3 className="title">Our Locations</h3>
+            <div className="loction-item mb-3">
+              <h4 className="title">California</h4>
+              <p className="location">1250 Sunset, Los Angeles, CA</p>
+            </div>
+            <div className="loction-item">
+              <h4 className="title">Los Angeles</h4>
+              <p className="location">669 Boulevard, Los Angeles</p>
+            </div>
+          </div>
+          {/* Item 3 */}
+          <div className="about-popup-item">
+            <h3 className="title">Contact Information</h3>
+            <div className="support-item mb-3">
+              <div className="avatar avatar-lg bg-primary rounded-circle">
+                <i className="isax isax-messages-3" />
+              </div>
+              <div>
+                <p className="title">General Inquiries</p>
+                <h5 className="link">info@example.com</h5>
+              </div>
+            </div>
+            <div className="support-item">
+              <div className="avatar avatar-lg bg-primary rounded-circle">
+                <i className="isax isax-call-calling" />
+              </div>
+              <div>
+                <p className="title">Emergency Cases</p>
+                <h5 className="link">+1 24565 89856</h5>
+              </div>
+            </div>
+          </div>
+          {/* Item 3 */}
+          <div className="about-popup-item border-0">
+            <h3 className="title">Follow Us</h3>
+            <ul className="d-flex align-items-center gap-2 social-iyem">
+              <li>
+                <Link to="#" className="social-icon">
+                  <i className="fa-brands fa-facebook" />
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="social-icon">
+                  <i className="fa-brands fa-x-twitter" />
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="social-icon">
+                  <i className="fa-brands fa-instagram" />
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="social-icon">
+                  <i className="fa-brands fa-linkedin" />
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ImageWithBasePath
+          src="assets/img/bg/offcanvas-bg.png"
+          alt="element"
+          className="element-01"
+        />
+      </div>
+      {/* end offcanvas */}
+      {/* Lightbox */}
+      <Lightbox
+        open={open}
+        close={() => setOpen(false)}
+        slides={images}
+        index={index}
+        on={{ view: ({ index }) => setIndex(index) }}
+      />
+    </>
+  );
+};
+
+export default CustomOffcanvas;

@@ -1,0 +1,382 @@
+@use "../base/colors";
+@use "../base/typography";
+@use "../utils/mixins";
+@use "../utils/variables";
+
+// Global Header Styles
+.header {
+  position: relative;
+  transition: all 0.9s;
+
+  &.fixed {
+    background: variables.$white;
+    top: 0;
+    transition: all 0.9s;
+    animation: 500ms ease-in-out 0s normal none 1 running fadeInDown;
+    position: fixed;
+    width: 100%;
+    z-index: 111;
+    box-shadow: variables.$box-shadow;
+  }
+
+  .header-nav {
+    border: 0;
+    position: unset;
+    height: 85px;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0;
+
+    @include mixins.respond-below(lg) {
+      height: 60px;
+      padding: 0;
+    }
+
+    .navbar-header {
+      display: inline-flex;
+      align-items: center;
+
+      @include mixins.respond-below(lg) {
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row-reverse;
+        width: 100%;
+      }
+
+      #mobile_btn {
+        display: none;
+        margin-right: 30px;
+        color: variables.$darkmode-gray900;
+
+        @include mixins.respond-below(lg) {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          background: variables.$darkmode-text-white;
+          border-radius: 50%;
+          flex-shrink: 0;
+          border: 1px solid variables.$gray-200;
+          margin-right: 0;
+        }
+
+        i {
+          font-size: 16px;
+          font-weight: variables.$font-weight-bold;
+        }
+      }
+
+		.logo {
+		display: inline-flex;           
+		align-items: center;            
+		gap: 12px; 
+		margin-right: 0;
+		width: auto;
+		max-width: 250px; 
+
+		@include mixins.respond-below(sm) {
+			width: 100%;
+			max-width: 100%;
+			justify-content: start;
+		}
+
+		img {
+			order: 1; 
+			height: 50px; 
+			width: auto;  
+			
+			@include mixins.respond-below(sm) {
+			height: 35px; 
+			}
+		}
+
+		.logo-name {
+			order: 2; 
+			font-size: 1.8rem; 
+			font-weight: bold;
+			color: variables.$primary;
+			margin: 0;
+			line-height: 1;
+		}
+		}
+    }
+
+    .header-menu {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .main-menu-wrapper {
+      @include mixins.respond-below(lg) {
+        order: 3;
+        width: 360px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: variables.$white;
+        z-index: 1060;
+        transform: translateX(-360px);
+        transition: all 0.4s;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+      }
+
+      @include mixins.respond-below(sm) {
+        width: 310px;
+      }
+
+      .menu-header {
+        background-color: variables.$white;
+        height: 60px;
+        border-bottom: 1px solid variables.$gray-200;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+
+        @include mixins.respond-below(lg) {
+          display: flex;
+          padding: 13px 16px;
+        }
+
+        .menu-logo {
+          img {
+            height: 40px;
+          }
+        }
+
+        .menu-close {
+          font-size: typography.$font__size__18;
+          @include mixins.respond-below(lg) {
+            width: 32px;
+            height: 32px;
+            border: 1px solid variables.$gray-100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            &:hover {
+              background: variables.$primary;
+              border: 1px solid variables.$primary;
+              color: variables.$darkmode-text-white;
+            }
+          }
+        }
+      }
+    }
+
+    // Main Navigation Styles (desktop & mobile)
+    .main-nav {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+
+      @include mixins.respond-below(lg) {
+        flex-direction: column;
+        margin-bottom: 0;
+        padding: 0px 16px !important;
+      }
+
+      li {
+        @include mixins.respond-above(lg) {
+          display: block;
+          position: relative;
+        }
+
+        a {
+          display: block;
+          font-size: variables.$font-size-16;
+          font-weight: variables.$font-weight-medium;
+          @include mixins.respond-below(lg) {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+
+        &.active > a {
+          color: variables.$primary-hover;
+        }
+
+        &.login-link {
+          display: none;
+          @include mixins.respond-below(sm) {
+            display: block;
+          }
+        }
+      }
+
+      > li {
+        @include mixins.respond-below(xl) {
+          margin-right: 20px;
+        }
+        @include mixins.respond-below(custom2000) {
+          margin-right: 25px;
+        }
+        @include mixins.respond-below(custom1399) {
+          margin-right: 13px;
+        }
+        @include mixins.respond-below(lg) {
+          border-bottom: 1px solid variables.$gray-200;
+          margin: 0;
+        }
+
+        > a {
+          @include mixins.respond-above(lg) {
+            line-height: 85px;
+            padding: 0 !important;
+          }
+          @include mixins.respond-below(lg) {
+            line-height: 1.5;
+            font-size: variables.$font-size-14;
+            font-weight: variables.$font-weight-medium;
+            padding: 16px 0px !important;
+          }
+        }
+      }
+    }
+
+    // Right Header Icons
+    .header-navbar-rht {
+      margin: 0 !important;
+      @include mixins.respond-below(lg) {
+        display: none;
+      }
+
+      li {
+        padding-right: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        &:last-child {
+          padding-right: 0px !important;
+        }
+
+        .details-btn {
+          width: 44px;
+          height: 44px;
+          border: 1px solid variables.$gray-200;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: variables.$gray-900;
+          position: relative;
+          background: variables.$white;
+          transition: all 0.3s;
+
+          &:hover {
+            background: variables.$primary;
+            border: 1px solid variables.$primary;
+            color: variables.$darkmode-text-white;
+          }
+        }
+      }
+    }
+  }
+
+  // Specific Modifiers
+  &.inner-header {
+    border-bottom: 1px solid variables.$border-color;
+    .header-nav .header-navbar-rht li .details-btn {
+      @include mixins.respond-below(xl) {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+
+  &.header-default {
+    .header-nav .main-nav .has-submenu.active > a {
+      position: relative;
+      &::before {
+        content: "";
+        background: variables.$primary-gradient;
+        width: 100%;
+        height: 2px;
+        position: absolute;
+        left: -1px;
+        bottom: -4px;
+        border-radius: 30px;
+        @include mixins.respond-below(lg) {
+          content: unset;
+        }
+      }
+    }
+    .has-submenu .sub-menu-one {
+      top: 50px !important;
+    }
+  }
+}
+
+// Mobile Menu Open State
+.menu-opened .main-menu-wrapper {
+  @include mixins.respond-below(lg) {
+    transform: translateX(0) !important;
+  }
+}
+
+html.menu-opened body {
+  overflow: hidden;
+}
+
+// Sidebar Overlay
+.sidebar-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  &.opened {
+    @include mixins.respond-below(lg) {
+      display: block;
+    }
+  }
+}
+
+// Offcanvas Support (if used)
+.offcanvas {
+  &.show {
+    z-index: 9999;
+  }
+}
+
+// Additional utility for theme toggle (if needed)
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: variables.$white;
+  border-radius: 50%;
+  font-size: 20px;
+  border: 1px solid variables.$gray-200;
+  transition: all 0.3s;
+  &:hover {
+    background: variables.$primary;
+    color: variables.$white;
+  }
+}
+
+// Animation
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
