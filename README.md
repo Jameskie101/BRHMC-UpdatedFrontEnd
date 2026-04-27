@@ -1,75 +1,126 @@
-# React + TypeScript + Vite
+# BRHMC-iHOMIS Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A professional Healthcare Management System built with React, Vite, Laravel, MySQL, and Bulma CSS.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend**: React 18.2.0 + Vite 7.0.7
+- **Backend**: Laravel 12.x + PHP 8.2+
+- **Database**: MySQL 5.7+
+- **UI**: Bulma CSS 1.0.0
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- PHP 8.2+ (with `zip` extension enabled)
+- Composer 2.0+
+- Node.js 18+ & npm 10+
+- MySQL 5.7+
 
-Note: This will impact Vite dev & build performances.
+## Quick Setup
 
-## Expanding the ESLint configuration
+```bash
+git clone <repository-url>
+cd BRHMC-iHOMIS
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# Automated (Mac/Linux)
+chmod +x setup.sh
+./setup.sh
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Or manual run
+composer install
+npm install
+cd backend && cp .env.example .env && cd ..
+php artisan key:generate
+php artisan migrate
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Running the Application
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Terminal 1 - Backend:**
+```bash
+cd backend
+php artisan serve
+# Runs at http://127.0.0.1:8000
 ```
+
+**Terminal 2 - Frontend:**
+```bash
+npm run dev
+# Runs at http://127.0.0.1:5173
+```
+
+Open `http://localhost:8000`
+
+## Project Structure
+
+```
+BRHMC-iHOMIS/
+├── src/                    # React Frontend
+│   ├── app.jsx            # Main React component
+│   └── index.css          # Styles + Bulma
+├── backend/               # Laravel API
+│   ├── app/               # Application logic
+│   ├── routes/            # API & web routes
+│   ├── resources/views/   # Blade templates
+│   ├── database/          # Migrations
+│   └── .env               # Environment config
+├── public/                # Static assets
+├── vite.config.js         # Vite configuration
+├── package.json           # Frontend dependencies
+├── setup.sh               # Setup script
+└── README.md             # This file
+```
+
+## Commands
+
+```bash
+npm run dev        # Start frontend dev server
+npm run build      # Build for production
+php artisan serve  # Start backend server
+php artisan migrate       # Run database migrations
+php artisan tinker        # Interactive shell
+php artisan make:model ModelName    # Generate model
+php artisan make:controller ControllerName  # Generate controller
+```
+
+## Database Setup
+
+MySQL configuration in `backend/.env`:
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=
+DB_DATABASE=laravel
+```
+
+Ensure MySQL is running and database exists, then run migrations.
+
+## Troubleshooting
+
+**Port 5173 already in use:**
+```bash
+Get-Process node | Stop-Process -Force  # Windows
+```
+
+**Database connection error:**
+- Ensure MySQL is running
+- Check credentials in `backend/.env`
+- Verify database exists
+
+**React app not loading:**
+- Hard refresh: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
+- Check browser console (F12) for errors
+- Verify both servers running on ports 8000 & 5173
+
+**PHP zip extension error:**
+- Uncomment `extension=zip` in `php.ini`
+- Restart your server
+
+## Next Steps
+
+1. Review the detailed documentation created for development reference
+2. Build your API endpoints in `backend/routes/api.php`
+3. Create React components in `src/` directory
+4. Both servers support hot-reload during development

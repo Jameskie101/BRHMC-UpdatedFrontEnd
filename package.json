@@ -1,22 +1,17 @@
 {
-  "name": "doccure-react",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@fancyapps/ui": "^6.1.7",
+    "name": "brhmcihomis",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "lint": "eslint .",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "@fancyapps/ui": "^6.1.7",
     "@fortawesome/fontawesome-free": "^7.1.0",
-    "@fullcalendar/daygrid": "^6.1.19",
-    "@fullcalendar/interaction": "^6.1.19",
-    "@fullcalendar/react": "^6.1.19",
-    "@fullcalendar/timegrid": "^6.1.19",
-    "@react-google-maps/api": "^2.20.8",
     "@reduxjs/toolkit": "^2.11.2",
     "antd": "^5.27.4",
     "aos": "^2.3.4",
@@ -50,9 +45,7 @@
     "sass": "^1.97.0",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.2.10",
-    "yet-another-react-lightbox": "^3.27.0"
-  },
-  "devDependencies": {
+    "yet-another-react-lightbox": "^3.27.0",
     "@eslint/js": "^9.39.2",
     "@types/bootstrap": "^5.2.10",
     "@types/jquery": "^3.5.33",
@@ -69,5 +62,5 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.50.0",
     "vite": "^7.3.0"
-  }
+    }
 }
