@@ -25,10 +25,10 @@ const Maintenance = () => {
                       will be right back in a few minutes.
                     </p>
                     <Link
-                      to={all_routes.home}
+                      to={all_routes.login}
                       className="btn btn-primary-gradient btn-sm"
                     >
-                      Back to Home
+                      Back to Log In
                     </Link>
                   </div>
                 </div>

@@ -145,3 +145,74 @@
 		}
 	}
 }
+
+// Search Patient Modal Styles
+.search-patient-modal {
+	.search-patient-modal-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 20px;
+		background-color: variables.$white;
+		border-bottom: 1px solid variables.$border-color;
+
+		.logo {
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			margin-right: 0;
+			width: auto;
+			max-width: 250px;
+			text-decoration: none;
+
+			@include mixins.respond-below(sm) {
+				width: 100%;
+				max-width: 100%;
+				justify-content: start;
+			}
+
+			img {
+				order: 1;
+				height: 50px;
+				width: auto;
+
+				@include mixins.respond-below(sm) {
+					height: 35px;
+				}
+			}
+
+			.logo-name {
+				order: 2;
+				font-size: 1.8rem;
+				font-weight: bold;
+				color: variables.$primary;
+				margin: 0;
+				line-height: 1;
+
+				@include mixins.respond-below(sm) {
+					font-size: 1.4rem;
+				}
+			}
+		}
+
+		.btn-close {
+			background: transparent;
+			opacity: 0.5;
+			transition: opacity 0.3s ease;
+
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
+
+	.modal-body {
+		padding: 1.5rem;
+	}
+
+	.modal-footer {
+		padding: 1rem 1.5rem;
+		background-color: variables.$white;
+		border-top: 1px solid variables.$border-color;
+	}
+}

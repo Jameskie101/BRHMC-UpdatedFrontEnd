@@ -106,10 +106,10 @@ const MyPatients = () => {
           <div className="content doctor-content">
             <div className="container-fluid px-lg-5"> 
               <div className="row">
-                <div className="col--4 col-xl-3 theiaStickySidebar mb-4">
+
                   {/* Profile Sidebar */}
                   <DoctorSidebar />
-                </div>
+
                 {/* Specific Patient Record */}
                 <div className="col-lg-8 col-xl-9">
                   <div className="card border-0 shadow-sm p-4" style={{ borderRadius: '8px' }}>
@@ -130,50 +130,62 @@ const MyPatients = () => {
                     </div>
 
                     {/* Demographics Row */}
-                    <div className="row g-3 border-bottom pb-4 mb-4 text-center">
-                      <div className="col-md-2 border-end">
-                        <div className="small text-muted">Birthdate: {mockPatientProfile.birthdate}</div>
-                        <div className="small fw-bold">Age: {mockPatientProfile.age}</div>
+                    <div className="row g-3 border-bottom pb-4 mb-4">
+                      <div className="col-6 col-sm-4 col-md-3">
+                        <div className="small text-muted">Birthdate</div>
+                        <div className="fw-semibold">{mockPatientProfile.birthdate}</div>
+                        <div className="small text-muted mt-1">Age</div>
+                        <div className="fw-semibold">{mockPatientProfile.age}</div>
                       </div>
-                      <div className="col-md-2 border-end">
-                        <div className="small text-muted">Civil Status: {mockPatientProfile.civilStatus}</div>
-                        <div className="small fw-bold">Gender: {mockPatientProfile.gender}</div>
+                      <div className="col-6 col-sm-4 col-md-3">
+                        <div className="small text-muted">Civil Status</div>
+                        <div className="fw-semibold">{mockPatientProfile.civilStatus}</div>
+                        <div className="small text-muted mt-1">Gender</div>
+                        <div className="fw-semibold">{mockPatientProfile.gender}</div>
                       </div>
-                      <div className="col-md-3 border-end">
-                        <div className="small text-muted">Employment Status: {mockPatientProfile.employmentStatus}</div>
-                        <div className="small fw-bold">Nationality: {mockPatientProfile.nationality}</div>
+                      <div className="col-6 col-sm-4 col-md-3">
+                        <div className="small text-muted">Employment</div>
+                        <div className="fw-semibold">{mockPatientProfile.employmentStatus}</div>
+                        <div className="small text-muted mt-1">Nationality</div>
+                        <div className="fw-semibold">{mockPatientProfile.nationality}</div>
                       </div>
-                      <div className="col-md-2 border-end">
-                        <div className="small text-muted">Religion: {mockPatientProfile.religion}</div>
-                        <div className="small fw-bold">Senior Citizen No: {mockPatientProfile.seniorCitizenNo}</div>
+                      <div className="col-6 col-sm-4 col-md-3">
+                        <div className="small text-muted">Religion</div>
+                        <div className="fw-semibold">{mockPatientProfile.religion}</div>
+                        <div className="small text-muted mt-1">Senior Citizen No.</div>
+                        <div className="fw-semibold">{mockPatientProfile.seniorCitizenNo || "—"}</div>
                       </div>
-                      <div className="col-md-3">
-                        <div className="small text-muted">MSS No: {mockPatientProfile.mssNo}</div>
-                        <div className="small fw-bold">Hospital/DOH personnel: {mockPatientProfile.isPersonnel}</div>
+                      <div className="col-6 col-sm-4 col-md-3">
+                        <div className="small text-muted">MSS No.</div>
+                        <div className="fw-semibold">{mockPatientProfile.mssNo || "—"}</div>
+                      </div>
+                      <div className="col-6 col-sm-4 col-md-3">
+                        <div className="small text-muted">Hospital/DOH Personnel</div>
+                        <div className="fw-semibold">{mockPatientProfile.isPersonnel}</div>
                       </div>
                     </div>
 
                     {/* Tab Navigation */}
-                    <ul className="nav nav-tabs border-0 bg-light rounded-top">
+                    <ul className="nav nav-tabs border-0 bg-light rounded-top overflow-auto flex-nowrap">
                       <li className="nav-item">
-                        <button className="nav-link active fw-bold small py-3">
+                        <button className="nav-link active fw-bold small py-3 px-3 px-md-4">
                           ADMISSION DETAILS
                         </button>
                       </li>
                       <li className="nav-item">
-                        <button className="nav-link text-dark small py-3 px-4">
+                        <button className="nav-link text-dark small py-3 px-3 px-md-4">
                           ACCOUNT INFORMATION
                         </button>
                       </li>
                       <li className="nav-item">
-                        <button className="nav-link text-dark small py-3 px-4">
+                        <button className="nav-link text-dark small py-3 px-3 px-md-4">
                           WARD ASSIGNMENT
                         </button>
                       </li>
                     </ul>
 
                     {/* Details Body */}
-                    <div className="border border-top-0 p-5 rounded-bottom" style={{ borderColor: '#26a69a' }}>
+                    <div className="border border-top-0 p-3 p-md-5 rounded-bottom" style={{ borderColor: '#26a69a' }}>
                       {[
                         { label: "Date of Admission:", value: mockPatientProfile.admissionDetails.date },
                         { label: "Admitting Physician:", value: mockPatientProfile.admissionDetails.physician },
@@ -183,8 +195,8 @@ const MyPatients = () => {
                         { label: "Admitting Diagnosis:", value: mockPatientProfile.admissionDetails.diagnosis }
                       ].map((item, idx) => (
                         <div className="row mb-3" key={idx}>
-                          <div className="col-md-4 text-end fw-bold small">{item.label}</div>
-                          <div className="col-md-8 small text-uppercase">{item.value}</div>
+                          <div className="col-12 col-md-4 fw-bold small text-md-end">{item.label}</div>
+                          <div className="col-12 col-md-8 small text-uppercase">{item.value}</div>
                         </div>
                       ))}
                     </div>

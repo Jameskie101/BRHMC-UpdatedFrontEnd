@@ -1,3 +1,4 @@
+
 export const all_routes = {
 
 //Doctor Routes
@@ -18,12 +19,11 @@ export const all_routes = {
 
 //Other Pages routes
   login: "/login",
-  loginEmail: "/login-email",
-  loginPhone: "/login-phone",
   maintenance: "/maintenance",
   comingSoon: "/coming-soon",
   error404: "/error-404",
   error500: "/error-500",
+  unauthorized: "/unauthorized",
 
 
 //Admin routes

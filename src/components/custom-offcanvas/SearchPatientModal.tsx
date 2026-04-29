@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import ImageWithBasePath from '../image-with-base-path';
+import { Link } from 'react-router';
+import { all_routes } from '@/routes/all_routes';
 
 interface SearchPatientModalProps {
   onClose: () => void;
@@ -110,30 +113,25 @@ const SearchPatientModal: React.FC<SearchPatientModalProps> = ({ onClose, mockPa
       }}
     >
       <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content shadow-lg border-0">
+        <div className="modal-content shadow-lg border-0 search-patient-modal">
 
-          {/* Modal Header - Conditional Rendering */}
-          {isSearching ? (
-            <div className="modal-header bg-primary text-white">
-              <div className="d-flex align-items-center gap-2 flex-grow-1">
-                <i className="isax isax-search-status" style={{ fontSize: '1.1rem' }} />
-                <div className="d-flex flex-column">
-                  <span className="fw-bold" style={{ fontSize: '0.85rem', letterSpacing: '0.5px' }}>SEARCH UTILITY</span>
-                  <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>Personal Profile | Consultation/Confinement Record</span>
-                </div>
-              </div>
-              <button type="button" className="btn-close btn-close-white" onClick={handleCloseModal} />
-            </div>
-          ) : (
-            <div className="modal-header bg-primary text-white">
-              <h5 className="modal-title d-flex align-items-center gap-2">
-                <i className="isax isax-search-normal-1" />
-                {isLoading ? "System Processing" : "Search Patient Utility"}
-              </h5>
-              <button type="button" className="btn-close btn-close-white" onClick={handleCloseModal} />
-            </div>
-          )}
-
+          {/* Modal Header with Logo - Similar to Common Header */}
+          <div className="search-patient-modal-header">
+            <Link to={all_routes.doctorDashboard} className="logo">
+              <h2 className="logo-name">BRHMC</h2>
+              <ImageWithBasePath
+                src="assets/img/brhmclogo.png"
+                alt="logo"
+                className="img-fluid"
+              />
+            </Link>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={handleCloseModal}
+              aria-label="Close"
+            />
+          </div>
           {/* Conditional Rendering Logic */}
           {isLoading ? (
             /* Loading View */

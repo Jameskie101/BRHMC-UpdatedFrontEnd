@@ -8,7 +8,7 @@ const CustomFooter = () => {
           <div className="row py-4">
             <div className="col-12 text-center">
               <p className="mb-0 text-white">
-                BRHMC-iHOMIS © 2026. All Rights Reserved.
+                BRHMC-iHOMIS © {new Date().getFullYear()} All Rights Reserved.
               </p>
             </div>
           </div>

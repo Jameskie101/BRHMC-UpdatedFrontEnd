@@ -1,0 +1,309 @@
+@use "../base/colors";
+@use "../base/typography";
+@use "../utils/mixins";
+@use "../utils/variables";
+
+// ========================================
+// Profile Icon Styles
+// ========================================
+.header .header-nav .header-navbar-rht {
+  li.profile-icon {
+    display: inline-flex;
+
+    @include mixins.respond-below(lg) {
+      padding-right: 15px;
+    }
+
+    @include mixins.respond-below(md) {
+      padding-right: 10px;
+    }
+
+    @include mixins.respond-below(sm) {
+      padding-right: 5px;
+    }
+
+    .profile-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid variables.$gray-200;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: variables.$primary;
+      background: variables.$white;
+      transition: all 0.3s;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+
+      @include mixins.respond-below(lg) {
+        width: 36px;
+        height: 36px;
+      }
+
+      @include mixins.respond-below(md) {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+      }
+
+      &:hover {
+        background: variables.$primary;
+        border: 1px solid variables.$primary;
+        color: variables.$darkmode-text-white;
+      }
+
+      i {
+        font-size: inherit;
+        font-weight: variables.$font-weight-bold;
+      }
+    }
+
+    // Profile dropdown styling
+    .profile-dropdown {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      animation: fadeInDown 0.3s ease-in-out;
+
+      .btn-close {
+        padding: 4px;
+        font-size: 1.25rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+
+      .profile-avatar {
+        display: flex;
+        justify-content: center;
+
+        .avatar-circle {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: variables.$gray-100;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: variables.$primary;
+          font-size: 28px;
+        }
+      }
+
+      .profile-info {
+        text-align: center;
+
+        h6 {
+          color: variables.$text-dark;
+          font-weight: variables.$font-weight-bold;
+        }
+
+        p {
+          color: variables.$gray-600;
+          font-size: 0.875rem;
+        }
+      }
+
+      .btn-profile-logout {
+        background: variables.$primary;
+        border: 1px solid variables.$primary;
+        color: variables.$white;
+        transition: all 0.3s;
+
+        &:hover {
+          background: variables.$primary-hover;
+          border-color: variables.$primary-hover;
+        }
+
+        i {
+          margin-right: 6px;
+        }
+      }
+
+      hr {
+        margin: 12px 0;
+        border: none;
+        border-top: 1px solid variables.$gray-200;
+      }
+    }
+  }
+}
+
+// ========================================
+// Off-Canvas / Mobile Button Styles
+// ========================================
+.header .header-nav .navbar-header {
+  #mobile_btn {
+    display: none;
+    margin-right: 30px;
+    color: variables.$primary;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    @include mixins.respond-below(lg) {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: variables.$white;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid variables.$gray-200;
+      margin-right: 0;
+      color: variables.$primary;
+    }
+
+    @include mixins.respond-below(md) {
+      width: 36px;
+      height: 36px;
+    }
+
+    @include mixins.respond-below(sm) {
+      width: 32px;
+      height: 32px;
+    }
+
+    i {
+      font-size: 16px;
+      font-weight: variables.$font-weight-bold;
+
+      @include mixins.respond-below(sm) {
+        font-size: 14px;
+      }
+    }
+
+    &:hover {
+      @include mixins.respond-below(lg) {
+        background: variables.$primary;
+        border: 1px solid variables.$primary;
+        color: variables.$white;
+      }
+    }
+  }
+}
+
+// ========================================
+// Off-Canvas Wrapper Styles
+// ========================================
+.main-menu-wrapper {
+  @include mixins.respond-below(lg) {
+    order: 3;
+    width: 360px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: variables.$white;
+    z-index: 1060;
+    transform: translateX(-360px);
+    transition: all 0.4s;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+  }
+
+  @include mixins.respond-below(sm) {
+    width: 310px;
+  }
+
+  .menu-header {
+    background-color: variables.$white;
+    height: 60px;
+    border-bottom: 1px solid variables.$gray-200;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+
+    @include mixins.respond-below(lg) {
+      display: flex;
+      padding: 13px 16px;
+    }
+
+    .menu-logo {
+      img {
+        height: 40px;
+      }
+    }
+
+    .menu-close {
+      font-size: typography.$font__size__18;
+      cursor: pointer;
+      transition: all 0.3s;
+
+      @include mixins.respond-below(lg) {
+        width: 32px;
+        height: 32px;
+        border: 1px solid variables.$gray-100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+
+        &:hover {
+          background: variables.$primary;
+          border: 1px solid variables.$primary;
+          color: variables.$darkmode-text-white;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// Sidebar Overlay & Mobile Menu State
+// ========================================
+.menu-opened .main-menu-wrapper {
+  @include mixins.respond-below(lg) {
+    transform: translateX(0) !important;
+  }
+}
+
+html.menu-opened body {
+  overflow: hidden;
+}
+
+.sidebar-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s;
+
+  &.opened {
+    @include mixins.respond-below(lg) {
+      display: block;
+    }
+  }
+}
+
+// ========================================
+// Off-Canvas Component (Bootstrap)
+// ========================================
+.offcanvas {
+  &.show {
+    z-index: 9999;
+  }
+}
+
+// ========================================
+// Animation
+// ========================================
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

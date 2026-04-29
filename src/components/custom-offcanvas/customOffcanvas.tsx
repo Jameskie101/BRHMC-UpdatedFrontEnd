@@ -4,10 +4,21 @@ import { Offcanvas } from "bootstrap";
 import { useState, useEffect } from "react";
 import { all_routes } from "@/routes/all_routes";
 import SearchPatientModal from "./SearchPatientModal";
+import { useLocation } from "react-router";
+import { doctorSidebarData } from "@/core/data/json/doctorSidebarData";
 
 const CustomOffcanvas = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (item: typeof doctorSidebarData[0]) => {
+  const itemPath = item.path;
+  if (location.pathname === itemPath) return true;
+  if (location.pathname.startsWith(`${itemPath}/`)) return true;
+  if (item.relativeLinks?.includes(location.pathname)) return true;
+  return false;
+};
 
   // Handle backdrop click to close offcanvas
   useEffect(() => {
@@ -73,15 +84,13 @@ const CustomOffcanvas = () => {
         data-bs-scroll="true"
       >
         <div className="offcanvas-header">
-          <Link to={all_routes.doctorDashboard}>
-                <h2 className="logo-name">
-                  BRHMC
-                </h2>
-            {/* <ImageWithBasePath
-              src="assets/img/logo.svg"
+          <Link to={all_routes.doctorDashboard} className="logo">
+            <h2 className="logo-name">BRHMC</h2>
+            <ImageWithBasePath
+              src="assets/img/brhmclogo.png"
               alt="logo"
-              className="img-fluid logo"
-            /> */}
+              className="img-fluid"
+            />
           </Link>
           <button
             type="button"
@@ -92,30 +101,65 @@ const CustomOffcanvas = () => {
             <i className="isax isax-close-circle" />
           </button>
         </div>
-        <div className="offcanvas-body">
-          {/* Search Patient */}
-          <div className="about-popup-item align-items-center">
-            <div className="d-flex justify-content-center mb-4">
-              <i className="isax isax-user-search" style={{ fontSize: "4rem", color: "#0d6efd" }} />
-            </div>
-            <div className="search-patient-container mt-3">
-              <button
-                type="button"
-                className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2"
-                onClick={handleSearchClick}
-              >
-                <i className="isax isax-search-normal-1" />
-                <span>Search Patient</span>
-              </button>
-            </div>
+          <div className="offcanvas-body">
+            {location.pathname === all_routes.doctorDashboard ? (
+              //Show only Search Patient block when in doctor dashboard
+              <div className="about-popup-item align-items-center">
+                <div className="d-flex justify-content-center mb-4">
+                  <i className="isax isax-user-search" style={{ fontSize: "4rem", color: "#27ae60" }} />
+                </div>
+                <div className="search-patient-container mt-3">
+                  <button
+                    type="button"
+                    className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2"
+                    onClick={handleSearchClick}
+                  >
+                    <i className="isax isax-search-normal-1" />
+                    <span>Search Patient</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // Show doctor navigation (with d-lg-none to hide on desktop) on other doctor pages
+              <div className="doctor-mobile-nav d-lg-none mt-4">
+                <div className="widget-profile pro-widget-content">
+                  <div className="profile-info-widget justify-content-center">
+                    <div className="profile-det-info text-center">
+                      <div className="mb-3" style={{ fontSize: '2rem', opacity: 0.8 }}>
+                        <i className="fa-regular fa-copy"></i>
+                      </div>
+                      <h4 className="text-uppercase fw-bold">Patient Form</h4>
+                      <p className="small text-muted">Electronic Medical Record Utility</p>
+                    </div>
+                  </div>
+                </div>
+                <nav className="dashboard-menu mt-3">
+                  <ul className="list-unstyled">
+                    {doctorSidebarData.map((item) => (
+                      <li key={item.path} className={`mb-2 ${isActive(item) ? "active bg-light rounded" : ""}`}>
+                        <Link
+                          to={item.path}
+                          className="d-flex align-items-center gap-2 py-2 px-3 text-decoration-none"
+                          onClick={closeOffcanvas}
+                        >
+                          <i className={item.icon} style={{ width: "24px" }} />
+                          <span>{item.label}</span>
+                          {item.badge && <small className="ms-auto badge bg-secondary">{item.badge}</small>}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+            )}
           </div>
-        </div>
-        <ImageWithBasePath
+{/*         <ImageWithBasePath
           src="assets/img/bg/offcanvas-bg.png"
           alt="element"
           className="element-01"
-        />
+        /> */}
       </div>
+
       {/* end offcanvas */}
 
       {showModal && <SearchPatientModal 

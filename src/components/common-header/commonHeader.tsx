@@ -6,6 +6,7 @@ import { setMobileSidebar } from "@/core/redux/sidebarSlice";
 import HeaderNav from "../header/headerNav";
 import { all_routes } from "@/routes/all_routes";
 import { Offcanvas } from "bootstrap";
+import ProfileModal from "../profile-modal/ProfileModal";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -84,7 +85,8 @@ const Header = () => {
           </div>
 
           {/* Right side icons */}
-          <ul className="nav header-navbar-rht">
+          <ul className="nav header-navbar-rht ">
+            <ProfileModal />
             <li>
               <Link
                 to="#"

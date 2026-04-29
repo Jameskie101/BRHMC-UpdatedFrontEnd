@@ -51,24 +51,95 @@ npm run dev
 
 Open `http://localhost:8000`
 
-## Project Structure
+## Project Structure Front-End only
 
 ```
-BRHMC-iHOMIS/
-├── src/                    # React Frontend
-│   ├── app.jsx            # Main React component
-│   └── index.css          # Styles + Bulma
-├── backend/               # Laravel API
-│   ├── app/               # Application logic
-│   ├── routes/            # API & web routes
-│   ├── resources/views/   # Blade templates
-│   ├── database/          # Migrations
-│   └── .env               # Environment config
-├── public/                # Static assets
-├── vite.config.js         # Vite configuration
-├── package.json           # Frontend dependencies
-├── setup.sh               # Setup script
-└── README.md             # This file
+Frontend/
+├── src/                           # React Frontend Source
+│   ├── main.tsx                  # React entry point
+│   ├── environment.tsx           # Environment configuration
+│   ├── assets/                   # Static assets
+│   │   ├── css/                  # Stylesheets
+│   │   │   ├── bootstrap.css
+│   │   │   ├── style.css
+│   │   │   ├── fullcalendar.min.css
+│   │   │   └── [other CSS files]
+│   │   ├── fonts/                # Font files
+│   │   ├── img/                  # Images
+│   │   │   └── bg/
+│   │   └── scss/                 # SCSS source files
+│   │       ├── main.scss
+│   │       ├── custom.scss
+│   │       ├── base/
+│   │       ├── components/
+│   │       ├── layout/
+│   │       ├── pages/
+│   │       ├── plugins/
+│   │       └── utils/
+│   ├── components/               # Reusable React components
+│   │   ├── common-error-boundary/
+│   │   ├── common-footer/
+│   │   ├── common-header/
+│   │   ├── custom-offcanvas/
+│   │   ├── custom-sidebar/
+│   │   ├── fav-icon/
+│   │   ├── header/
+│   │   ├── image-with-base-path/
+│   │   ├── multiple-Select/
+│   │   └── scroll-to-top/
+│   ├── core/                     # Core functionality
+│   │   ├── data/                 # Data interfaces & JSON
+│   │   │   ├── interface/
+│   │   │   └── json/
+│   │   └── redux/                # Redux state management
+│   │       ├── sidebarSlice.tsx
+│   │       ├── themeSlice.tsx
+│   │       └── store.tsx
+│   ├── data/                     # Application data
+│   │   └── headerData.ts
+│   ├── hooks/                    # Custom React hooks
+│   │   ├── useBootstrapTooltips.ts
+│   │   ├── useDebouncedValue.ts
+│   │   ├── useMediaQuery.ts
+│   │   ├── useMobileSidebarOverlay.ts
+│   │   ├── useReduxHooks.ts
+│   │   ├── useSidebarClasses.ts
+│   │   ├── useTagInput.ts
+│   │   ├── useThemeSettings.ts
+│   │   └── useViewPort.ts
+│   ├── layouts/                  # Layout components
+│   │   ├── authLayout.tsx
+│   │   ├── commonLayout.tsx
+│   │   └── mainLayout.tsx
+│   ├── pages/                    # Page components
+│   │   ├── authentication/       # Auth pages (login, signup, etc.)
+│   │   └── doctor-modules/       # Doctor-specific modules
+│   ├── routes/                   # Routing configuration
+│   │   ├── router.tsx
+│   │   ├── all_routes.tsx
+│   │   ├── router.link.tsx
+│   │   └── dynamicTitle.tsx
+│   ├── types/                    # TypeScript type definitions
+│   │   ├── bootstrap.d.ts
+│   │   ├── bootstrap-modal.d.ts
+│   │   └── swiper.d.ts
+│   └── utils/                    # Utility functions
+│       ├── cleanupFakeAuth.ts
+│       ├── errorReporter.ts
+│       ├── theme.ts
+│       ├── constants/
+│       ├── formatters/
+│       ├── helpers/
+│       └── validators/
+├── public/                        # Static files (images, icons, etc.)
+├── index.html                     # HTML entry point
+├── package.json                   # Frontend dependencies
+├── vite.config.ts                 # Vite configuration
+├── tsconfig.json                  # TypeScript configuration
+├── tsconfig.app.json              # TypeScript app config
+├── tsconfig.node.json             # TypeScript Node config
+├── eslint.config.js               # ESLint configuration
+└── README.md                      # This file
 ```
 
 ## Commands

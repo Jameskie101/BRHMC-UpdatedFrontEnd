@@ -21,10 +21,10 @@ const Error500 = () => {
                 <h5 className="mb-2">Oops! That Page Can’t Be Found.</h5>
                 <p>The page you are looking for was never existed.</p>
                 <Link
-                  to={all_routes.home}
+                  to={all_routes.login}
                   className="btn btn-primary-gradient btn-sm"
                 >
-                  Back to Home
+                  Back to Log In
                 </Link>
               </div>
             </div>

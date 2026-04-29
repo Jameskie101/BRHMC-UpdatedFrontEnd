@@ -19,12 +19,11 @@ const Signatory = lazy(() => import("@/pages/doctor-modules/signatory/signatory"
 const Diagnosis = lazy(() => import("@/pages/doctor-modules/diagnosis/diagnosis"));
 
 //Auth Components
-const LoginEmail = lazy(() => import("@/pages/authentication/login/login-email"));
-const LoginPhone = lazy(() => import("@/pages/authentication/login/login-phone"));
-const Comingsoon = lazy(() => import("@/pages/authentication/coming soon"));
+const Login = lazy(() => import("@/pages/authentication/login/login"));
 const Maintenance = lazy(() => import("@/pages/authentication/maintanence"));
 const Error404 = lazy(() => import("@/pages/authentication/error-404/error404"));
 const Error500 = lazy(() => import("@/pages/authentication/error-500/error500"));
+const Unauthorized = lazy(() => import("@/pages/authentication/unauthorized"));
 
 const route = all_routes;
 console.log("doctorWardCourse path:", route.doctorWardCourse);
@@ -35,7 +34,7 @@ export const publicRoutes = [
   {
     path: "/",
     name: "Root",
-    element: <Navigate to={route.doctorDashboard} />,
+    element: <Navigate to={route.login} />,
     route: Route,
   },
 ];
@@ -47,40 +46,7 @@ export const authRoutes = [
     path: route.login,
     element: (
       <Suspense fallback={suspenseFallback}>
-        {/* <Login /> */}
-      </Suspense>
-    ),
-    route: Route,
-    meta_title: "BRHMC",
-  },
-  {
-    id: "5",
-    path: route.loginEmail,
-    element: (
-      <Suspense fallback={suspenseFallback}>
-        <LoginEmail />
-      </Suspense>
-    ),
-    route: Route,
-    meta_title: "BRHMC",
-  },
-  {
-    id: "10",
-    path: route.loginPhone,
-    element: (
-      <Suspense fallback={suspenseFallback}>
-        <LoginPhone />
-      </Suspense>
-    ),
-    route: Route,
-    meta_title: "BRHMC",
-  },
-  {
-    id: "11",
-    path: route.comingSoon,
-    element: (
-      <Suspense fallback={suspenseFallback}>
-        <Comingsoon />
+        <Login />
       </Suspense>
     ),
     route: Route,
@@ -119,6 +85,17 @@ export const authRoutes = [
     route: Route,
     meta_title: "BRHMC",
   },
+  {
+    id: "15",
+    path: route.unauthorized,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <Unauthorized />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  }
 ];
 
 
