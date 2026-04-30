@@ -48,7 +48,7 @@ const Login = () => {
                     className="login-logo-img img-fluid"
                   />
                   <h2 className="mt-3 mb-1 fw-bold text-primary">Welcome Back</h2>
-                  <p className="text-muted small">Sign in to continue</p>
+                  <p className="text-muted small">Log in to continue</p>
                 </div>
 
                 {error && (

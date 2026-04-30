@@ -6,11 +6,12 @@ import AuthGuard from "@/components/auth-guard/AuthGuard"; //Comment to disable 
 import GuestGuard from "@/components/auth-guard/GuestGuard";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/core/redux/authSlice";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { publicRoutes } from "./router.link";
+import Unauthorized from "@/pages/authentication/unauthorized";
 
 const ALLRoutes: React.FC = () => {
-  const dispatch = useDispatch();
+const dispatch = useDispatch();
 const [isRestoring, setIsRestoring] = useState(true);
 
 useEffect(() => {
@@ -25,6 +26,10 @@ useEffect(() => {
 if (isRestoring) {
   return <div>Loading...</div>;
 }
+
+  const filteredAuthRoutes = authRoutes.filter(
+    (route) => route.path !== "/unauthorized"
+  );
   return (
     <>
       <Routes>
@@ -32,13 +37,24 @@ if (isRestoring) {
         <Route path={route.path} element={route.element} key={idx} />
           ))}
 
-        <Route element={<GuestGuard />}>
-        <Route element={<AuthLayout />}> {/* Comment this line to disable auth guard for testing */}
-          {authRoutes.map((route, idx) => (
+      {/* Guest-only routes (login, maintenance, error pages) */}
+      <Route element={<GuestGuard />}>
+        <Route element={<AuthLayout />}>
+          {filteredAuthRoutes.map((route, idx) => (
             <Route path={route.path} element={route.element} key={idx} />
           ))}
         </Route>
-        </Route>
+      </Route>
+
+      {/* Unauthorized page – not guarded by GuestGuard */}
+      <Route
+        path="/unauthorized"
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Unauthorized />
+          </Suspense>
+        }
+      />
 
         {/* only Doctors and admin can access docotr routes */} 
         <Route element = {<AuthGuard requiredRoleLevel={1} />}>  {/* Comment this line to disable auth guard for testing */}

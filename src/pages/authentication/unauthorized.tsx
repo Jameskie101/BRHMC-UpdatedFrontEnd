@@ -1,10 +1,18 @@
 import { useNavigate } from "react-router";
 import ImageWithBasePath from "@/components/image-with-base-path";
+import { logout } from "@/core/redux/authSlice";
+import { useDispatch } from "react-redux";
 
 const Unauthorized = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleGoBack = () => navigate(-1);
+  const handleLogoutAndLogin = () => {
+    // Clear auth state
+    dispatch(logout());
+    // Clear localStorage (logout already does this in your slice)
+    navigate("/login", { replace: true });
+  };
 
   const handleReload = () => window.location.reload();
 
@@ -30,12 +38,12 @@ const Unauthorized = () => {
         }}
       >
         <button
-          onClick={handleGoBack}
+          onClick={handleLogoutAndLogin}
           className="btn btn-primary btn-sm"
           style={{ padding: "8px 16px", fontSize: 14 }}
           aria-label="Go back to previous page"
         >
-          Go Back
+          Go Back to Log In
         </button>
         <button
           onClick={handleReload}
