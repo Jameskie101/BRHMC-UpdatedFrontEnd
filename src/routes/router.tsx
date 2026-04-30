@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router";
 import { authRoutes, customLayout } from "./router.link";
-import MainLayout from "../layouts/mainLayout";
 import AuthLayout from "../layouts/authLayout";
 import CommonLayout from "@/layouts/commonLayout";
 import AuthGuard from "@/components/auth-guard/AuthGuard"; //Comment to disable auth guard for testing
@@ -8,6 +7,7 @@ import GuestGuard from "@/components/auth-guard/GuestGuard";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/core/redux/authSlice";
 import { useEffect, useState } from "react";
+import { publicRoutes } from "./router.link";
 
 const ALLRoutes: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,6 +28,9 @@ if (isRestoring) {
   return (
     <>
       <Routes>
+        {publicRoutes.map((route, idx) => (
+        <Route path={route.path} element={route.element} key={idx} />
+          ))}
 
         <Route element={<GuestGuard />}>
         <Route element={<AuthLayout />}> {/* Comment this line to disable auth guard for testing */}
@@ -46,7 +49,7 @@ if (isRestoring) {
         </Route>
         </Route> {/* Comment this line to disable auth guard for testing */}
 
-        {/* not yet implemented */}
+        {/* Not yet implemented */}
         {/* <Route element ={<AuthGuard requiredRoleLevel={0} />}> */}
         {/* only admin can access admin routes */}
         {/* <Route element={<AdminLayout />}>
@@ -56,13 +59,6 @@ if (isRestoring) {
         </Route> 
         </Route> */}
 
-        <Route element ={<AuthGuard requiredRoleLevel={0} />}>
-        <Route element={<MainLayout />}>
-          {customLayout.map((route, idx) => (
-            <Route path={route.path} element={route.element} key={idx} />
-          ))}
-        </Route>
-        </Route>
       </Routes>
     </>
   );
