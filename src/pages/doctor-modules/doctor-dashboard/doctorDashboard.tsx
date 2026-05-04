@@ -1,5 +1,4 @@
-import ImageWithBasePath from "@/components/image-with-base-path"
-
+import ImageWithBasePath from "@/components/image-with-base-path";
 
 const DoctorDashboard = () => {
   return (
@@ -9,9 +8,7 @@ const DoctorDashboard = () => {
         <div className="container">
           <div className="row align-items-center inner-banner">
             <div className="col-md-12 col-12 text-center">
-              <h2 className="breadcrumb-title">
-                Doctors Module
-              </h2>
+              <h2 className="breadcrumb-title">Doctors Module</h2>
               <p className="breadcrumb-subtitle">
                 Integrated Hospital Operations & Management System
               </p>
@@ -42,12 +39,15 @@ const DoctorDashboard = () => {
         </div>
       </div>
       {/* /Breadcrumb */}
+
       {/* Page Content */}
       <div className="content">
         <div className="container">
           <div className="row">
             <div className="col-12">
-              <h5 className="mb-4 fw-bold text-uppercase border-bottom pb-2">Module Utilities</h5>
+              <h5 className="mb-4 fw-bold text-uppercase border-bottom pb-2">
+                Module Utilities
+              </h5>
             </div>
           </div>
 
@@ -56,27 +56,30 @@ const DoctorDashboard = () => {
               {
                 title: "Patient Log",
                 desc: "List of patients under this ward",
-                icon: "isax isax-document-text-15",
-                color: "text-primary"
+                icon: "isax isax-document-text-15", 
+                color: "text-primary",
               },
               {
                 title: "Archive Viewer",
                 desc: "Access archive file online",
-                icon: "isax isax-calendar-tick-15",
-                color: "text-info"
+                icon: "isax isax-archive-15",
+                color: "text-primary",
               },
               {
                 title: "Report",
                 desc: "System report generation",
                 icon: "isax isax-chart-215",
-                color: "text-secondary"
-              }
+                color: "text-primary",
+              },
             ].map((item, index) => (
               <div className="col-md-4 col-sm-6" key={index}>
                 <div className="card shadow-sm border-0 h-100 p-3">
                   <div className="d-flex align-items-center">
-                    {/* Icon Container */}
-                    <div className={`bg-light rounded p-3 me-3 ${item.color}`}>
+                    {/* Icon Container - Inline style added to enforce your CSS variable */}
+                    <div
+                      className={`bg-light rounded p-3 me-3 ${item.color}`}
+                      style={{ color: "var(--primary, #0f763f)" }}
+                    >
                       <i className={`${item.icon} fs-2`} />
                     </div>
                     {/* Text Content */}
@@ -93,8 +96,7 @@ const DoctorDashboard = () => {
       </div>
       {/* /Page Content */}
     </>
+  );
+};
 
-  )
-}
-
-export default DoctorDashboard
+export default DoctorDashboard;
