@@ -1,68 +1,678 @@
+import React, { useEffect, useState } from "react";
 import DoctorSidebar from "@/components/custom-sidebar/doctorSidebar";
 import ImageWithBasePath from "@/components/image-with-base-path";
+import { useLocation } from "react-router";
 
-const DrugsMeds = () => {
+// --- Types ---
+interface MainDrugRecord {
+  id: string;
+  name: string;
+  description: string;
+  qty: number;
+  cost: number;
+  dateDispensed: string;
+}
+
+interface IssuableDrug {
+  id: string;
+  code: string;
+  name: string;
+  selected: boolean;
+  qtyIntakeNum: number;
+  qtyIntakeUnit: string;
+  freqNum: number;
+  freqInterval: string;
+  dateIssuance: string;
+  qtyIssued: number;
+  cost: number;
+}
+
+// --- mock data lang muna sa options ---
+const INTAKE_UNITS = [
+  "tablet(s)",
+  "TABLET COATED",
+  "TABLET COATED PARTICLES",
+  "TABLET CONTROLLED RELEASE",
+  "TABLET DELAYED ACTION",
+  "TABLET DELAYED RELEASE",
+  "TABLET DISPERSIBLE",
+  "TABLET EFFERVESCENT",
+  "TABLET ENTERIC COATED",
+  "TABLET EXTENDED RELEASE",
+  "TABLET FILM COATED",
+];
+
+const FREQUENCY_INTERVALS = ["Hour", "Day", "Week", "Month", "Year", "Minute"];
+
+//get local time
+const getCurrentDateTimeLocal = () => {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  return now.toISOString().slice(0, 16);
+};
+
+const DrugsAndMedicine = () => {
+  const location = useLocation();
+
+  const [mockPatientProfile] = useState({
+    hospitalNumber: "000000000777288",
+    lastName: "DO",
+    firstName: "REA",
+    middleName: "MON",
+    address: "111 Estanza, Legazpi City, Albay",
+    birthdate: "01/01/2000",
+    age: "26 Yrs. Old",
+    civilStatus: "Married",
+    gender: "Male",
+    employmentStatus: "Employed",
+    nationality: "Filipino",
+    religion: "Catholic",
+    seniorCitizenNo: "",
+    mssNo: "",
+    isPersonnel: "No",
+  });
+
+  // --- State ---
+  const [mainRecords, setMainRecords] = useState<MainDrugRecord[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [issuableDrugs, setIssuableDrugs] = useState<IssuableDrug[]>([]);
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+
+  //paginatio and sorting state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10); 
+  const [sortConfig, setSortConfig] = useState<{ field: 'date' | 'item' | null, order: 'asc' | 'desc' }>({ field: null, order: 'desc' });
+
+  useEffect(() => {
+    if (location.state?.selectedPatientId) {
+      setTimeout(() => {}, 1500);
+    }
+  }, [location.state]);
+
+  // --- sorting Logic ---
+  const handleSort = (field: 'date' | 'item') => {
+    let order: 'asc' | 'desc' = 'asc';
+    if (sortConfig.field === field && sortConfig.order === 'asc') {
+      order = 'desc';
+    }
+    setSortConfig({ field, order });
+    setCurrentPage(1); //para ma reset to first page when sorting changes
+  };
+
+  const sortedRecords = [...mainRecords].sort((a, b) => {
+    if (sortConfig.field === 'date') {
+      const dateA = new Date(a.dateDispensed).getTime();
+      const dateB = new Date(b.dateDispensed).getTime();
+      return sortConfig.order === 'asc' ? dateA - dateB : dateB - dateA;
+    }
+    if (sortConfig.field === 'item') {
+      return sortConfig.order === 'asc' 
+        ? a.name.localeCompare(b.name) 
+        : b.name.localeCompare(a.name);
+    }
+    return 0; // default or no sorting happens
+  });
+
+  // ---pagination calculation ---
+  const totalPages = Math.max(1, Math.ceil(sortedRecords.length / pageSize));
+  const paginatedRecords = sortedRecords.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPageSize(Number(e.target.value));
+    setCurrentPage(1); 
+  };
+
+  // --- handlers po ---
+  const openDmListModal = () => {
+    setIssuableDrugs([
+      {
+        id: "d1",
+        code: "P26-111799",
+        name: "Paracetamol, 500.00 mg",
+        selected: false,
+        qtyIntakeNum: 1.0,
+        qtyIntakeUnit: "tablet(s)",
+        freqNum: 1,
+        freqInterval: "Day",
+        dateIssuance: getCurrentDateTimeLocal(),
+        qtyIssued: 1.0,
+        cost: 2.77,
+      },
+      {
+        id: "d2",
+        code: "A12-992100",
+        name: "Amoxicillin, 250.00 mg",
+        selected: false,
+        qtyIntakeNum: 1.0,
+        qtyIntakeUnit: "tablet(s)",
+        freqNum: 3,
+        freqInterval: "Day",
+        dateIssuance: getCurrentDateTimeLocal(),
+        qtyIssued: 21.0,
+        cost: 5.5,
+      },
+      {
+        id: "d3",
+        code: "M01-445811",
+        name: "Mefenamic Acid, 500.00 mg",
+        selected: false,
+        qtyIntakeNum: 1.0,
+        qtyIntakeUnit: "tablet(s)",
+        freqNum: 2,
+        freqInterval: "Day",
+        dateIssuance: getCurrentDateTimeLocal(),
+        qtyIssued: 10.0,
+        cost: 4.25,
+      },
+    ]);
+    setExpandedRows({});
+    setShowModal(true);
+  };
+
+  const updateModalItem = (id: string, field: keyof IssuableDrug, value: any) => {
+    setIssuableDrugs((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const toggleRowExpand = (id: string) => {
+    setExpandedRows(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleSaveModal = () => {
+    const selectedItems = issuableDrugs.filter((d) => d.selected);
+    if (selectedItems.length === 0) {
+      alert("Please select at least one drug to issue.");
+      return;
+    }
+
+    const newRecords: MainDrugRecord[] = selectedItems.map((item) => {
+      const dateObj = new Date(item.dateIssuance);
+      const formattedDate = `${dateObj.getMonth() + 1}/${dateObj.getDate()}/${dateObj.getFullYear()}`;
+
+      const freqText = item.freqNum === 1 
+        ? `Once A ${item.freqInterval}` 
+        : `${item.freqNum} Times A ${item.freqInterval}`;
+
+      const cleanName = item.name.split(',')[0];
+      const dosageInfo = item.name.includes(',') ? item.name.substring(item.name.indexOf(',') + 1).trim() : "";
+
+      const detailedDesc = `${item.qtyIntakeNum.toFixed(2)} ${item.qtyIntakeUnit.charAt(0).toUpperCase() + item.qtyIntakeUnit.slice(1)} , ${dosageInfo}, ${item.qtyIntakeNum.toFixed(2)} ${item.qtyIntakeUnit.charAt(0).toUpperCase() + item.qtyIntakeUnit.slice(1)} ${freqText}, Oral`;
+
+      return {
+        id: Date.now().toString() + Math.random(),
+        name: cleanName,
+        description: detailedDesc,
+        qty: item.qtyIssued,
+        cost: item.cost,
+        dateDispensed: formattedDate,
+      };
+    });
+
+    setMainRecords((prev) => [...newRecords, ...prev]);
+    setCurrentPage(1); 
+    setShowModal(false);
+  };
+
   return (
     <>
-      {/* Breadcrumb */}
+      <style>
+        {`
+          .hide-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+          .hide-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+          .hide-scrollbar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+          .text-hover-primary:hover { color: var(--primary, #0f763f) !important; }
+
+          /* Modal Inline Forms */
+          .form-control-compact { padding: 2px 6px; font-size: 0.85rem; height: 28px; border: 1px solid #ced4da; border-radius: 2px; }
+          .form-select-compact { padding: 2px 24px 2px 6px; font-size: 0.85rem; height: 28px; border: 1px solid #ced4da; border-radius: 2px; }
+          
+          /* Wider modal for Tablets */
+          @media (min-width: 768px) and (max-width: 1199px) {
+            .tablet-wide-modal { max-width: 95% !important; width: 95% !important; }
+          }
+
+          /* Responsive Buttons */
+          @media (max-width: 575.98px) {
+            .modal-footer-actions { flex-direction: column-reverse; width: 100%; }
+            .modal-footer-actions button { width: 100%; margin-top: 8px; }
+            .pagination-controls { flex-direction: column; gap: 12px; }
+          }
+        `}
+      </style>
+
+      {/* Breadcrumb Section */}
       <div className="breadcrumb-bar">
         <div className="container">
           <div className="row align-items-center inner-banner">
             <div className="col-md-12 col-12 text-center">
               <nav aria-label="breadcrumb" className="page-breadcrumb">
-                <h2 className="breadcrumb-title">Drugs & Meds</h2>
+                <h2 className="breadcrumb-title">Drugs and Medicine</h2>
               </nav>
             </div>
           </div>
         </div>
         <div className="breadcrumb-bg">
-          <ImageWithBasePath
-            src="assets/img/bg/breadcrumb-bg-01.png"
-            alt="img"
-            className="breadcrumb-bg-01"
-          />
-          <ImageWithBasePath
-            src="assets/img/bg/breadcrumb-bg-02.png"
-            alt="img"
-            className="breadcrumb-bg-02"
-          />
-          <ImageWithBasePath
-            src="assets/img/bg/breadcrumb-icon.png"
-            alt="img"
-            className="breadcrumb-bg-03"
-          />
-          <ImageWithBasePath
-            src="assets/img/bg/breadcrumb-icon.png"
-            alt="img"
-            className="breadcrumb-bg-04"
-          />
+          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-01.png" alt="img" className="breadcrumb-bg-01" />
+          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-02.png" alt="img" className="breadcrumb-bg-02" />
         </div>
       </div>
-      {/* /Breadcrumb */}
-      {/* Page Content */}
-      <div className="content">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-4 col-xl-3 theiaStickySidebar">
-              {/* Profile Sidebar */}
-              <DoctorSidebar />
-              {/* /Profile Sidebar */}
-            </div>
-            <div className="col-lg-8 col-xl-9">
-              <div className="accunts-sec">
-                <div className="dashboard-header">
-                  <div className="header-back">
-                    <h3>Coming Soon!</h3>
+
+      <div className="content doctor-content bg-light mt-n4 d-flex flex-column" style={{ minHeight: "100vh" }}>
+        <div className="container-fluid px-3 px-lg-5 pt-0 flex-grow-1 d-flex flex-column">
+          <div className="row flex-grow-1">
+            <DoctorSidebar />
+
+            <div className="col-lg-8 col-xl-9 mt-4 mt-lg-0 d-flex flex-column">
+              <div className="card border-0 shadow-sm p-3 p-md-4 mb-4 d-flex flex-column flex-grow-1" style={{ borderRadius: "12px", borderTop: "4px solid var(--primary, #0f763f)" }}>
+                
+                {/* patient profle header */}
+                <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 mb-4 pb-4 border-bottom text-center text-md-start">
+                  <div className="rounded-circle d-flex align-items-center justify-content-center bg-light shadow-sm flex-shrink-0" style={{ width: "90px", height: "90px", border: "2px solid var(--primary, #0f763f)" }}>
+                    <i className="isax isax-user fs-1 text-primary" style={{ color: "var(--primary, #0f763f)" }} />
+                  </div>
+                  <div>
+                    <div className="badge bg-light text-secondary border mb-2 px-2 py-1">ID: {mockPatientProfile.hospitalNumber}</div>
+                    <h3 className="fw-bold mb-1 text-dark fs-3 fs-md-2">
+                      {mockPatientProfile.lastName}, {mockPatientProfile.firstName} {mockPatientProfile.middleName}
+                    </h3>
+                    <div className="text-muted small d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                      <i className="isax isax-location text-danger" />
+                      {mockPatientProfile.address}
+                    </div>
                   </div>
                 </div>
+
+                <div className="row g-2 mb-4 text-nowrap">
+                  {[
+                    { label: "Birthdate", value: mockPatientProfile.birthdate },
+                    { label: "Age", value: mockPatientProfile.age },
+                    { label: "Civil Status", value: mockPatientProfile.civilStatus },
+                    { label: "Gender", value: mockPatientProfile.gender },
+                    { label: "Employment Status", value: mockPatientProfile.employmentStatus },
+                    { label: "Nationality", value: mockPatientProfile.nationality },
+                    { label: "Religion", value: mockPatientProfile.religion },
+                    { label: "MSS No.", value: mockPatientProfile.mssNo },
+                    { label: "Hospital/DOH Personnel", value: mockPatientProfile.isPersonnel },
+                  ].map((item, idx) => (
+                    <div className="col-6 col-sm-4 col-md-3 col-xl-2" key={idx}>
+                      <div className="px-3 py-2 bg-light rounded-2 h-100 border border-light-subtle text-center text-sm-start d-flex flex-column justify-content-center">
+                        <span className="text-muted d-block text-truncate mb-0" style={{ fontSize: "0.65rem", textTransform: "uppercase" }}>{item.label}</span>
+                        <span className="fw-bold text-dark d-block text-truncate" style={{ fontSize: "0.85rem" }}>{item.value || "—"}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* main data scetion */}
+                <div className="d-flex flex-column flex-grow-1 mb-4">
+                  
+                  {/* toolbar */}
+                  <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+                    <h5 className="fw-bold text-dark mb-0 text-center text-md-start text-uppercase">Drugs and Medicine</h5>
+            
+                    <div className="d-flex flex-wrap justify-content-center justify-content-md-end pb-1 pb-lg-0 ms-md-auto" style={{ gap: "6px" }}>
+                      <button 
+                        onClick={openDmListModal} 
+                        className="btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap bg-white text-dark fw-bold text-hover-primary flex-grow-1 flex-md-grow-0"
+                        style={{ borderRadius: "4px", cursor: "pointer" }}
+                      >
+                        <i className="isax isax-menu-board"></i> <span>DM List</span>
+                      </button>
+                      
+                      {/* srt by date btn */}
+                      <button 
+                        onClick={() => handleSort('date')}
+                        className={`btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 ${sortConfig.field === 'date' ? 'bg-light text-primary border-primary' : 'bg-white text-dark'} fw-bold text-hover-primary`}
+                        style={{ borderRadius: "4px", cursor: "pointer" }}
+                      >
+                        <i className={`isax ${sortConfig.field === 'date' && sortConfig.order === 'asc' ? 'isax-arrow-up-2' : 'isax-arrow-down-1'}`}></i> 
+                        <span className="d-none d-sm-inline">Sort by Date</span>
+                      </button>
+
+                      {/* sort by item btn */}
+                      <button 
+                        onClick={() => handleSort('item')}
+                        className={`btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 ${sortConfig.field === 'item' ? 'bg-light text-primary border-primary' : 'bg-white text-dark'} fw-bold text-hover-primary`}
+                        style={{ borderRadius: "4px", cursor: "pointer" }}
+                      >
+                        {sortConfig.field === 'item' ? (
+                          <i className={`isax ${sortConfig.order === 'asc' ? 'isax-arrow-up-2' : 'isax-arrow-down-1'}`}></i>
+                        ) : (
+                          <i className="isax isax-sort"></i>
+                        )}
+                        <span className="d-none d-sm-inline">Sort by Item</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* table layout */}
+                  <div className="border rounded-0 flex-grow-1 bg-white shadow-sm d-flex flex-column overflow-hidden" style={{ minHeight: "450px" }}>
+                    <div className="table-responsive flex-grow-1 bg-white p-0">
+                      <table className="table table-hover align-middle mb-0" style={{ fontSize: "0.85rem", minWidth: "750px" }}>
+                        <thead style={{ backgroundColor: "#f8f9fa" }}>
+                          <tr>
+                            <th className="border-bottom py-3 px-4 text-dark fw-bold" style={{ width: "60%" }}>Drug/Medicine Description</th>
+                            <th className="border-bottom py-3 px-4 text-dark fw-bold" style={{ width: "20%" }}>Cost</th>
+                            <th className="border-bottom py-3 px-4 text-dark fw-bold" style={{ width: "20%" }}>Date Dispensed</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {paginatedRecords.length === 0 ? (
+                            <tr>
+                              <td colSpan={3} className="text-center text-muted py-5 border-0">
+                                <i className="isax isax-folder-open fs-1 mb-3 opacity-50 d-block" style={{ fontSize: '3rem' }}></i>
+                                <h6 className="fw-bold mb-1">No drugs and medicine recorded yet.</h6>
+                                <p className="small mb-0">Click <strong className="text-dark">DM List</strong> in the toolbar above to issue a drug.</p>
+                              </td>
+                            </tr>
+                          ) : (
+                            paginatedRecords.map((record) => (
+                              <tr key={record.id} style={{ transition: "background-color 0.2s" }}>
+                                <td className="py-3 px-4">
+                                  <div className="fw-bold text-primary mb-1" style={{ color: "var(--primary, #0f763f)" }}>{record.name}</div>
+                                  <div className="text-dark">{record.description}</div>
+                                </td>
+                                <td className="py-3 px-4 align-top pt-4">P {record.cost.toFixed(2)}</td>
+                                <td className="py-3 px-4 text-muted align-top pt-4">{record.dateDispensed}</td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* pagination controls (no bugs) */}
+                    {sortedRecords.length > 0 && (
+                      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-light gap-2 pagination-controls">
+                        
+                        <div className="d-flex align-items-center gap-2">
+                          <span className="text-muted small fw-medium">Show</span>
+                          <select 
+                            className="form-select form-select-sm shadow-none" 
+                            style={{ width: "75px", borderColor: "#ced4da" }}
+                            value={pageSize}
+                            onChange={handlePageSizeChange}
+                          >
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                          </select>
+                          <span className="text-muted small fw-medium">entries</span>
+                        </div>
+
+                        <span className="text-muted small fw-medium text-center">
+                          Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, sortedRecords.length)} of {sortedRecords.length} entries
+                        </span>
+                        
+                        <div className="d-flex gap-1">
+                          <button 
+                            className="btn btn-sm btn-outline-secondary px-3" 
+                            onClick={() => handlePageChange(currentPage - 1)} 
+                            disabled={currentPage === 1}
+                          >
+                            Prev
+                          </button>
+                          <span className="btn btn-sm btn-light disabled px-3 text-dark fw-bold border">
+                            {currentPage} / {totalPages}
+                          </span>
+                          <button 
+                            className="btn btn-sm btn-outline-secondary px-3" 
+                            onClick={() => handlePageChange(currentPage + 1)} 
+                            disabled={currentPage === totalPages}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-2 text-muted fw-bold" style={{ fontSize: "0.85rem" }}>
+                  Total Number of Record/s: <span className="text-dark">{sortedRecords.length}</span>
+                </div>
+
               </div>
             </div>
           </div>
         </div>
       </div>
-      {/* /Page Content */}
+
+      {/* sa dm list na modal */}
+      {showModal && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1060 }}>
+          <div className="modal-dialog modal-xl tablet-wide-modal modal-dialog-centered px-2">
+            <div className="modal-content shadow-lg border-0 rounded-1 overflow-hidden bg-white">
+              
+              {/* Header */}
+              <div className="modal-header border-0 py-3 d-flex align-items-center" style={{ backgroundColor: "#333b45" }}>
+                <h4 className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2" style={{ fontSize: "1.1rem", letterSpacing: "0.5px" }}>
+                  <i className="isax isax-health" style={{ fontSize: "1.5rem" }}></i>
+                  LIST OF DRUGS AND MEDICINE ISSUED TO PATIENT
+                </h4>
+                <button type="button" className="btn-close btn-close-white shadow-none" onClick={() => setShowModal(false)}></button>
+              </div>
+
+              {/* bdy */}
+              <div className="modal-body p-0">
+                <div className="table-responsive" style={{ maxHeight: "65vh" }}>
+                  <table className="table modal-table bg-white mb-0 w-100">
+                    <thead style={{ backgroundColor: "#f8f9fa", position: "sticky", top: 0, zIndex: 1 }}>
+                      <tr>
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold text-center" style={{ width: "5%" }}>#</th>
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold" style={{ width: "35%" }}>Item Description</th>
+                        
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold text-center d-none d-lg-table-cell" style={{ width: "15%" }}>Qty Intake</th>
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold text-center d-none d-lg-table-cell" style={{ width: "15%" }}>Frequency</th>
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold text-center d-none d-lg-table-cell" style={{ width: "15%" }}>Date of Issuance</th>
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold text-center d-none d-lg-table-cell" style={{ width: "8%" }}>Qty</th>
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold text-center d-none d-lg-table-cell" style={{ width: "7%" }}>Cost</th>
+                        
+                        <th className="border-bottom py-3 px-3 text-dark fw-bold text-center d-table-cell d-lg-none" style={{ width: "15%" }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {issuableDrugs.map((item, index) => (
+                        <React.Fragment key={item.id}>
+                          <tr>
+                            <td className="text-center text-muted py-3 px-3 align-middle">{index + 1}</td>
+                            <td className="text-wrap py-3 px-3 align-middle">
+                              <div className="d-flex align-items-start gap-2">
+                                <input 
+                                  type="checkbox" 
+                                  className="form-check-input mt-1 shadow-none flex-shrink-0" 
+                                  style={{ border: "1px solid var(--primary, #0f763f)", cursor: "pointer", width: "18px", height: "18px" }}
+                                  checked={item.selected}
+                                  onChange={(e) => updateModalItem(item.id, "selected", e.target.checked)}
+                                />
+                                <div>
+                                  <span className="fw-bold text-dark d-block">{item.code}</span> 
+                                  <span className="text-muted small">{item.name}</span>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td className="text-center align-middle py-3 px-2 d-none d-lg-table-cell">
+                              <div className="d-flex align-items-center gap-1 justify-content-center">
+                                <input 
+                                  type="number" 
+                                  className="form-control form-control-compact text-end shadow-none" 
+                                  style={{ width: "60px", borderColor: "var(--primary, #0f763f)" }} 
+                                  value={item.qtyIntakeNum.toFixed(2)}
+                                  onChange={(e) => updateModalItem(item.id, "qtyIntakeNum", parseFloat(e.target.value) || 0)}
+                                  step="0.01" min="0"
+                                />
+                                <select 
+                                  className="form-select form-select-compact shadow-none"
+                                  style={{ width: "110px", borderColor: "var(--primary, #0f763f)" }}
+                                  value={item.qtyIntakeUnit}
+                                  onChange={(e) => updateModalItem(item.id, "qtyIntakeUnit", e.target.value)}
+                                >
+                                  {INTAKE_UNITS.map(unit => <option key={unit} value={unit}>{unit}</option>)}
+                                </select>
+                              </div>
+                            </td>
+                            <td className="text-center align-middle py-3 px-2 d-none d-lg-table-cell">
+                              <div className="d-flex align-items-center gap-1 justify-content-center">
+                                <input 
+                                  type="number" 
+                                  className="form-control form-control-compact text-end shadow-none" 
+                                  style={{ width: "50px", borderColor: "var(--primary, #0f763f)" }} 
+                                  value={item.freqNum}
+                                  onChange={(e) => updateModalItem(item.id, "freqNum", parseInt(e.target.value) || 0)}
+                                  min="1"
+                                />
+                                <span className="text-muted small fw-bold">x/</span>
+                                <select 
+                                  className="form-select form-select-compact shadow-none"
+                                  style={{ width: "95px", borderColor: "var(--primary, #0f763f)" }}
+                                  value={item.freqInterval}
+                                  onChange={(e) => updateModalItem(item.id, "freqInterval", e.target.value)}
+                                >
+                                  {FREQUENCY_INTERVALS.map(freq => <option key={freq} value={freq}>{freq}</option>)}
+                                </select>
+                              </div>
+                            </td>
+                            <td className="text-center align-middle py-3 px-2 d-none d-lg-table-cell">
+                              <input 
+                                type="datetime-local" 
+                                className="form-control form-control-compact m-auto shadow-none" 
+                                style={{ borderColor: "var(--primary, #0f763f)", maxWidth: "160px" }}
+                                value={item.dateIssuance}
+                                onChange={(e) => updateModalItem(item.id, "dateIssuance", e.target.value)}
+                              />
+                            </td>
+                            <td className="text-center align-middle py-3 px-2 fw-bold text-dark d-none d-lg-table-cell">
+                              {item.qtyIssued.toFixed(2)}
+                            </td>
+                            <td className="text-center align-middle py-3 px-2 text-muted small d-none d-lg-table-cell">
+                              {item.cost.toFixed(2)}
+                            </td>
+
+                            <td className="text-center align-middle py-3 px-2 d-table-cell d-lg-none">
+                              <button 
+                                className="btn btn-sm btn-outline-secondary px-3 rounded-1 text-nowrap"
+                                onClick={() => toggleRowExpand(item.id)}
+                              >
+                                {expandedRows[item.id] ? "Hide" : "See More"}
+                              </button>
+                            </td>
+                          </tr>
+
+                          {expandedRows[item.id] && (
+                            <tr className="d-lg-none bg-light">
+                              <td colSpan={3} className="px-3 py-3 border-bottom">
+                                <div className="d-flex flex-column gap-3 rounded-2 border p-3 bg-white shadow-sm">
+                                  
+                                  <div className="d-flex flex-column">
+                                    <label className="text-muted small fw-bold mb-1 text-uppercase">Qty Intake</label>
+                                    <div className="d-flex gap-2">
+                                      <input 
+                                        type="number" 
+                                        className="form-control form-control-sm shadow-none w-25" 
+                                        style={{ borderColor: "var(--primary, #0f763f)" }} 
+                                        value={item.qtyIntakeNum.toFixed(2)}
+                                        onChange={(e) => updateModalItem(item.id, "qtyIntakeNum", parseFloat(e.target.value) || 0)}
+                                        step="0.01" min="0"
+                                      />
+                                      <select 
+                                        className="form-select form-select-sm shadow-none w-75"
+                                        style={{ borderColor: "var(--primary, #0f763f)" }}
+                                        value={item.qtyIntakeUnit}
+                                        onChange={(e) => updateModalItem(item.id, "qtyIntakeUnit", e.target.value)}
+                                      >
+                                        {INTAKE_UNITS.map(unit => <option key={unit} value={unit}>{unit}</option>)}
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  <div className="d-flex flex-column">
+                                    <label className="text-muted small fw-bold mb-1 text-uppercase">Frequency</label>
+                                    <div className="d-flex align-items-center gap-2">
+                                      <input 
+                                        type="number" 
+                                        className="form-control form-control-sm shadow-none w-25" 
+                                        style={{ borderColor: "var(--primary, #0f763f)" }} 
+                                        value={item.freqNum}
+                                        onChange={(e) => updateModalItem(item.id, "freqNum", parseInt(e.target.value) || 0)}
+                                        min="1"
+                                      />
+                                      <span className="text-muted small fw-bold">x /</span>
+                                      <select 
+                                        className="form-select form-select-sm shadow-none flex-grow-1"
+                                        style={{ borderColor: "var(--primary, #0f763f)" }}
+                                        value={item.freqInterval}
+                                        onChange={(e) => updateModalItem(item.id, "freqInterval", e.target.value)}
+                                      >
+                                        {FREQUENCY_INTERVALS.map(freq => <option key={freq} value={freq}>{freq}</option>)}
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  <div className="d-flex flex-column">
+                                    <label className="text-muted small fw-bold mb-1 text-uppercase">Date of Issuance</label>
+                                    <input 
+                                      type="datetime-local" 
+                                      className="form-control form-control-sm shadow-none w-100" 
+                                      style={{ borderColor: "var(--primary, #0f763f)" }}
+                                      value={item.dateIssuance}
+                                      onChange={(e) => updateModalItem(item.id, "dateIssuance", e.target.value)}
+                                    />
+                                  </div>
+
+                                  <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded-2 border">
+                                    <div className="d-flex flex-column">
+                                      <span className="text-muted small text-uppercase">Qty Issued</span>
+                                      <span className="fw-bold text-dark fs-6">{item.qtyIssued.toFixed(2)}</span>
+                                    </div>
+                                    <div className="d-flex flex-column text-end">
+                                      <span className="text-muted small text-uppercase">Cost</span>
+                                      <span className="text-dark fw-bold fs-6">{item.cost.toFixed(2)}</span>
+                                    </div>
+                                  </div>
+
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* sa footer */}
+              <div className="modal-footer border-0 p-3 justify-content-end" style={{ backgroundColor: "#e2e5e9" }}>
+                <div className="d-flex modal-footer-actions gap-2 w-100 justify-content-sm-end">
+                  <button 
+                    type="button" 
+                    className="btn rounded-1 px-5 py-2 fw-medium shadow-sm text-white" 
+                    style={{ backgroundColor: "var(--primary, #0f763f)", cursor: "pointer" }} 
+                    onClick={handleSaveModal}
+                  >
+                    SAVE
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
 
-export default DrugsMeds;
+export default DrugsAndMedicine;

@@ -1,66 +1,352 @@
-import DoctorSidebar from "@/components/custom-sidebar/doctorSidebar"
-import ImageWithBasePath from "@/components/image-with-base-path"
+import React, { useEffect, useState } from "react";
+import DoctorSidebar from "@/components/custom-sidebar/doctorSidebar";
+import ImageWithBasePath from "@/components/image-with-base-path";
+import { useLocation } from "react-router";
 
+const ProcedureAndComplication = () => {
+  const location = useLocation();
 
-const Invoices = () => {
+  const [mockPatientProfile] = useState({
+    hospitalNumber: "000000000777288",
+    lastName: "DO",
+    firstName: "REA",
+    middleName: "MON",
+    address: "111 Estanza, Legazpi City, Albay",
+    birthdate: "01/01/2000",
+    age: "26 Yrs. Old",
+    civilStatus: "Married",
+    gender: "Male",
+    employmentStatus: "Employed",
+    nationality: "Filipino",
+    religion: "Catholic",
+    seniorCitizenNo: "",
+    mssNo: "",
+    isPersonnel: "No",
+  });
+
+  // --- State Management ---
+  const [activeTab, setActiveTab] = useState<"procedure" | "complication">("procedure");
+  
+  const [savedData, setSavedData] = useState({
+    procedure: "",
+    complication: "",
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempText, setTempText] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.selectedPatientId) {
+      setTimeout(() => {}, 1500);
+    }
+  }, [location.state]);
+
+  const hasData = savedData[activeTab].trim().length > 0;
+  
+  // --- Handlers ---
+  const handleTabSwitch = (tab: "procedure" | "complication") => {
+    if (isEditing) return; // pag prevent sa tab switching while editing para ma avoid mawala ung data
+    setActiveTab(tab);
+  };
+
+  const handleAdd = () => {
+    setTempText("");
+    setIsEditing(true);
+  };
+
+  const handleEdit = () => {
+    setTempText(savedData[activeTab]);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    setSavedData((prev) => ({
+      ...prev,
+      [activeTab]: tempText,
+    }));
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setTempText("");
+    setIsEditing(false);
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    setSavedData((prev) => ({
+      ...prev,
+      [activeTab]: "",
+    }));
+    setShowDeleteModal(false);
+    setIsEditing(false);
+  };
+
   return (
-   <>
-  {/* Breadcrumb */}
-  <div className="breadcrumb-bar">
-    <div className="container">
-      <div className="row align-items-center inner-banner">
-        <div className="col-md-12 col-12 text-center">
-          <nav aria-label="breadcrumb" className="page-breadcrumb">
-            <h2 className="breadcrumb-title">Procedure</h2>
-          </nav>
+    <>
+      <style>
+        {`
+          .hide-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+          .hide-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+          .hide-scrollbar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+          .text-hover-primary:hover { color: var(--primary, #0f763f) !important; }
+          
+          /* Custom Tabs to match table header feel */
+          .content-tab {
+            background-color: transparent;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+          }
+          .content-tab.active {
+            color: var(--primary, #0f763f);
+            border-bottom-color: var(--primary, #0f763f);
+            background-color: #ffffff;
+          }
+          .content-tab:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        `}
+      </style>
+
+      {/* Breadcrumb Section */}
+      <div className="breadcrumb-bar">
+        <div className="container">
+          <div className="row align-items-center inner-banner">
+            <div className="col-md-12 col-12 text-center">
+              <nav aria-label="breadcrumb" className="page-breadcrumb">
+                <h2 className="breadcrumb-title">Procedure Done / Complication</h2>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div className="breadcrumb-bg">
+          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-01.png" alt="img" className="breadcrumb-bg-01" />
+          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-02.png" alt="img" className="breadcrumb-bg-02" />
         </div>
       </div>
-    </div>
-    <div className="breadcrumb-bg">
-      <ImageWithBasePath
-        src="assets/img/bg/breadcrumb-bg-01.png"
-        alt="img"
-        className="breadcrumb-bg-01"
-      />
-      <ImageWithBasePath
-        src="assets/img/bg/breadcrumb-bg-02.png"
-        alt="img"
-        className="breadcrumb-bg-02"
-      />
-      <ImageWithBasePath
-        src="assets/img/bg/breadcrumb-icon.png"
-        alt="img"
-        className="breadcrumb-bg-03"
-      />
-      <ImageWithBasePath
-        src="assets/img/bg/breadcrumb-icon.png"
-        alt="img"
-        className="breadcrumb-bg-04"
-      />
-    </div>
-  </div>
-  {/* /Breadcrumb */}
-  {/* Page Content */}
-  <div className="content doctor-content">
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-4 col-xl-3 theiaStickySidebar">
-          {/* Profile Sidebar */}
-        <DoctorSidebar/>
-          {/* /Profile Sidebar */}
-        </div>
-        <div className="col-lg-8 col-xl-9">
-          <div className="dashboard-header">
-            <h3>Coming Soon!</h3>
+
+      <div className="content doctor-content bg-light mt-n4 d-flex flex-column" style={{ minHeight: "100vh" }}>
+        <div className="container-fluid px-3 px-lg-5 pt-0 flex-grow-1 d-flex flex-column">
+          <div className="row flex-grow-1">
+            <DoctorSidebar />
+
+            <div className="col-lg-8 col-xl-9 mt-4 mt-lg-0 d-flex flex-column">
+              <div className="card border-0 shadow-sm p-3 p-md-4 mb-4 d-flex flex-column flex-grow-1" style={{ borderRadius: "12px", borderTop: "4px solid var(--primary, #0f763f)" }}>
+                
+                <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 mb-4 pb-4 border-bottom text-center text-md-start">
+                  <div className="rounded-circle d-flex align-items-center justify-content-center bg-light shadow-sm flex-shrink-0" style={{ width: "90px", height: "90px", border: "2px solid var(--primary, #0f763f)" }}>
+                    <i className="isax isax-user fs-1 text-primary" style={{ color: "var(--primary, #0f763f)" }} />
+                  </div>
+                  <div>
+                    <div className="badge bg-light text-secondary border mb-2 px-2 py-1">ID: {mockPatientProfile.hospitalNumber}</div>
+                    <h3 className="fw-bold mb-1 text-dark fs-3 fs-md-2">
+                      {mockPatientProfile.lastName}, {mockPatientProfile.firstName} {mockPatientProfile.middleName}
+                    </h3>
+                    <div className="text-muted small d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                      <i className="isax isax-location text-danger" />
+                      {mockPatientProfile.address}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row g-2 mb-4 text-nowrap">
+                  {[
+                    { label: "Birthdate", value: mockPatientProfile.birthdate },
+                    { label: "Age", value: mockPatientProfile.age },
+                    { label: "Civil Status", value: mockPatientProfile.civilStatus },
+                    { label: "Gender", value: mockPatientProfile.gender },
+                    { label: "Employment Status", value: mockPatientProfile.employmentStatus },
+                    { label: "Nationality", value: mockPatientProfile.nationality },
+                    { label: "Religion", value: mockPatientProfile.religion },
+                    { label: "MSS No.", value: mockPatientProfile.mssNo },
+                    { label: "Hospital/DOH Personnel", value: mockPatientProfile.isPersonnel },
+                  ].map((item, idx) => (
+                    <div className="col-6 col-sm-4 col-md-3 col-xl-2" key={idx}>
+                      <div className="px-3 py-2 bg-light rounded-2 h-100 border border-light-subtle text-center text-sm-start d-flex flex-column justify-content-center">
+                        <span className="text-muted d-block text-truncate mb-0" style={{ fontSize: "0.65rem", textTransform: "uppercase" }}>{item.label}</span>
+                        <span className="fw-bold text-dark d-block text-truncate" style={{ fontSize: "0.85rem" }}>{item.value || "—"}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* main content area */}
+                <div className="d-flex flex-column flex-grow-1 mb-4">
+                  
+                  <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+                    <h5 className="fw-bold text-dark mb-0 text-center text-md-start text-uppercase">
+                      Procedure Done | Complication
+                    </h5>
+            
+                    <div className="d-flex flex-wrap justify-content-center justify-content-md-end pb-1 pb-lg-0 ms-md-auto" style={{ gap: "6px" }}>
+                      <button 
+                        onClick={handleAdd} 
+                        disabled={isEditing || hasData}
+                        className={`btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 ${
+                          (isEditing || hasData) ? 'bg-light text-muted opacity-50' : 'bg-white text-dark fw-bold text-hover-primary'
+                        }`}
+                        style={{ borderRadius: "4px", cursor: (isEditing || hasData) ? "not-allowed" : "pointer" }}
+                      >
+                        <i className="isax isax-add-square"></i> <span>Add</span>
+                      </button>
+                      
+                      <button 
+                        onClick={handleEdit} 
+                        disabled={isEditing || !hasData}
+                        className={`btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 ${
+                          (isEditing || !hasData) ? 'bg-light text-muted opacity-50' : 'bg-white text-dark fw-bold text-hover-primary'
+                        }`}
+                        style={{ borderRadius: "4px", cursor: (isEditing || !hasData) ? "not-allowed" : "pointer" }}
+                      >
+                        <i className="isax isax-edit"></i> <span>Edit</span>
+                      </button>
+
+                      <button 
+                        onClick={handleSave} 
+                        disabled={!isEditing}
+                        className={`btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 ${
+                          !isEditing ? 'bg-light text-muted opacity-50' : 'bg-white text-dark fw-bold text-hover-primary'
+                        }`}
+                        style={{ borderRadius: "4px", cursor: !isEditing ? "not-allowed" : "pointer" }}
+                      >
+                        <i className="isax isax-save-2"></i> <span>Save</span>
+                      </button>
+
+                      <button 
+                        onClick={handleCancel} 
+                        disabled={!isEditing}
+                        className={`btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 ${
+                          !isEditing ? 'bg-light text-muted opacity-50' : 'bg-white text-dark fw-bold text-hover-primary'
+                        }`}
+                        style={{ borderRadius: "4px", cursor: !isEditing ? "not-allowed" : "pointer" }}
+                      >
+                        <i className="isax isax-undo"></i> <span>Cancel</span>
+                      </button>
+
+                      <button 
+                        onClick={handleDeleteClick} 
+                        disabled={isEditing || !hasData}
+                        className={`btn btn-sm border border-secondary-subtle shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 ${
+                          (isEditing || !hasData) ? 'bg-light text-muted opacity-50' : 'bg-white text-danger fw-bold'
+                        }`}
+                        style={{ borderRadius: "4px", cursor: (isEditing || !hasData) ? "not-allowed" : "pointer" }}
+                      >
+                        <i className="isax isax-trash"></i> <span>Del</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-0 flex-grow-1 bg-white shadow-sm d-flex flex-column overflow-hidden" style={{ minHeight: "450px" }}>
+                    
+                    <div className="d-flex border-bottom" style={{ backgroundColor: "#f8f9fa" }}>
+                      <button 
+                        className={`content-tab ${activeTab === 'procedure' ? 'active' : ''}`}
+                        onClick={() => handleTabSwitch('procedure')}
+                        disabled={isEditing && activeTab !== 'procedure'}
+                      >
+                        Procedure
+                      </button>
+                      <button 
+                        className={`content-tab ${activeTab === 'complication' ? 'active' : ''}`}
+                        onClick={() => handleTabSwitch('complication')}
+                        disabled={isEditing && activeTab !== 'complication'}
+                      >
+                        Complication
+                      </button>
+                    </div>
+
+                    {/* edit content area */}
+                    <div className="d-flex flex-column flex-grow-1 p-3 p-md-4" style={{ backgroundColor: "#ffffff" }}>
+                      {!isEditing && !hasData ? (
+                        <div className="h-100 d-flex flex-column align-items-center justify-content-center text-muted py-5 text-center">
+                          <i className="isax isax-document-text fs-1 mb-3 opacity-50" style={{ fontSize: '3rem' }}></i>
+                          <h6 className="fw-bold mb-1">No {activeTab} data recorded.</h6>
+                          <p className="small mb-0">Click <strong className="text-dark">Add</strong> in the toolbar above to begin typing.</p>
+                        </div>
+                      ) : (
+                        <div className="d-flex flex-column flex-grow-1 fade-in">
+                          <label className="fw-bold mb-2 text-dark" style={{ fontSize: "0.9rem", color: "var(--primary, #0f763f)" }}>
+                            {activeTab === 'procedure' ? 'Procedure Done' : 'Complication Details'}
+                          </label>
+                          <textarea
+                            className="form-control rounded-1 shadow-none flex-grow-1"
+                            style={{ 
+                              borderColor: isEditing ? "var(--primary, #0f763f)" : "#dee2e6", 
+                              resize: "none", 
+                              fontSize: "0.95rem",
+                              backgroundColor: isEditing ? "#ffffff" : "#f8f9fa",
+                              minHeight: "300px"
+                            }}
+                            value={isEditing ? tempText : savedData[activeTab]}
+                            onChange={(e) => setTempText(e.target.value)}
+                            disabled={!isEditing}
+                            placeholder={`Type ${activeTab} details here...`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  {/* /Page Content */}
-</>
 
-  )
-}
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1060 }}>
+          <div className="modal-dialog modal-sm modal-dialog-centered px-3">
+            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden' }}>
+              
+              <div className="modal-header border-0 py-3 d-flex align-items-center" style={{ backgroundColor: '#333b45' }}>
+                <h3 className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2" style={{ fontSize: '1.1rem', letterSpacing: '0.5px' }}>
+                  <i className="isax isax-warning-2" style={{ fontSize: '1.5rem' }}></i>
+                  Confirm Delete
+                </h3>
+              </div>
+              
+              <div className="modal-body p-4 bg-white text-center">
+                <i className="isax isax-trash text-danger mb-3 d-block" style={{ fontSize: '2.5rem' }}></i>
+                <p className="mb-0 text-dark fw-medium" style={{ fontSize: '1.05rem' }}>
+                  Are you sure you want to delete the record for <strong className="text-danger text-capitalize">{activeTab}</strong>?
+                </p>
+              </div>
+              
+              <div className="modal-footer border-0 d-flex flex-column flex-sm-row justify-content-center gap-2 p-3" style={{ backgroundColor: '#e2e5e9' }}>
+                <button 
+                  type="button" 
+                  className="btn btn-light rounded-1 px-4 py-2 fw-medium border-secondary-subtle w-100" 
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-danger rounded-1 px-4 py-2 fw-medium w-100" 
+                  onClick={confirmDelete}
+                >
+                  Delete
+                </button>
+              </div>
 
-export default Invoices
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ProcedureAndComplication;

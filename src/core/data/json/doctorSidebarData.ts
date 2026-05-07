@@ -5,7 +5,7 @@ export interface DoctorSidebarItem {
   path: string;
   icon?: string;
   badge?: number;
-  relativeLinks?: string[]; // Array of paths that should keep this menu item active
+  relativeLinks?: string[]; 
 }
 
 export const doctorSidebarData: DoctorSidebarItem[] = [
@@ -14,16 +14,15 @@ export const doctorSidebarData: DoctorSidebarItem[] = [
     path: all_routes.doctorDashboard,
     icon: "isax isax-category-2",
   },
-    {
+  {
     label: "Account Information",
     path: all_routes.doctorMypatients,
-    icon: "fa-solid fa-user-injured",
+    icon: "fa-solid fa-user-injured", 
   },
   {
     label: "History",
     path: all_routes.doctorHistory,
     icon: "isax isax-clock",
-    //badge: 2,
   },
   {
     label: "Signs | Symptoms",
@@ -58,38 +57,26 @@ export const doctorSidebarData: DoctorSidebarItem[] = [
   {
     label: "Patient Lab/Diag",
     path: all_routes.doctorPatientLabDiag,
-    //icon: "fa-solid fa-money-bill-1",
+    icon: "isax isax-search-status", 
   },
   {
     label: "Diagnosis",
     path: all_routes.doctorDiagnosis,
-    //icon: "isax isax-key",
+    icon: "isax isax-activity", 
   },
- /*  {
-    label: "Doctor Chat",
-    path: all_routes.doctorChat,
-    icon: "isax isax-messages-1",
-    badge: 7,
-  }, */
   {
     label: "Desposition",
     path: all_routes.doctorDesposition,
-    //icon: "isax isax-grid-5",
+    icon: "isax isax-export-1", 
   },
   {
-    label: "Physican",
+    label: "Physician",
     path: all_routes.doctorPhysicain,
-    icon: "isax isax-profile",
+    icon: "isax isax-user", 
   },
-   {
+  {
     label: "Signatory",
     path: all_routes.doctorSignatory,
-    //icon: "fa-solid fa-shield-halved",
+    icon: "isax isax-edit-2", 
   },
-  /*
-  {
-    label: "Logout",
-    path: all_routes.login,
-    icon: "isax isax-logout",
-  }, */
-]; 
+];

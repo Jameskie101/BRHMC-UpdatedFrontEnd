@@ -260,9 +260,7 @@ const PatientHistory = () => {
                 {/* Profile Header */}
                 <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 mb-4 pb-4 border-bottom text-center text-md-start position-relative">
                   <div className="position-absolute top-0 end-0 d-none d-md-block">
-                     <button className="btn btn-sm text-dark px-2 py-1 bg-light border rounded text-hover-danger">
-                        <i className="isax isax-close-circle fw-bold fs-5"></i>
-                     </button>
+                   
                   </div>
 
                   <div
@@ -313,39 +311,43 @@ const PatientHistory = () => {
                   <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-3 gap-3">
                     <h5 className="fw-bold text-dark mb-0 text-center text-lg-start">PATIENT HISTORY</h5>
                     
-                    <div className="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2 gap-md-3">
+                   <div className="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2 gap-md-3">
+  
+  <button 
+    onClick={() => setShowInformantModal(true)}
+    className="btn btn-sm text-white fw-semibold rounded-1 shadow-sm px-5 border-0 w-100 w-md-auto"
+    style={{ backgroundColor: "var(--primary, #0f763f)" }}
+  >
+    Informant
+  </button>
+  
+  <div className="d-flex align-items-center gap-1 shadow-sm w-100 w-md-auto">
+    <button 
+      onClick={() => {
+        if (availableHistoryTypes.length === 0) {
+          setShowWarningModal(true); 
+        } else {
+          setShowAddHistoryModal(true);
+        }
+      }}
+      className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark text-hover-primary flex-grow-1 flex-md-grow-0 ${availableHistoryTypes.length === 0 ? 'opacity-50' : ''}`}
+      style={{ cursor: availableHistoryTypes.length === 0 ? "not-allowed" : "pointer" }}
+    >
+      <i className="isax isax-add-square"></i> <span className="d-none d-md-inline">Add</span>
+    </button>
+    
+    <button className="btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark flex-grow-1 flex-md-grow-0">
+      <i className="isax isax-edit"></i> <span className="d-none d-md-inline">Edit</span>
+    </button>
+
+    <button className="btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-danger flex-grow-1 flex-md-grow-0">
+      <i className="isax isax-trash"></i> <span className="d-none d-md-inline">Del</span>
+    </button>
+  </div>
+
+</div>
                       
-                      <button 
-                        onClick={() => setShowInformantModal(true)}
-                        className="btn btn-sm text-white fw-semibold rounded-1 shadow-sm px-4 border-0 w-100 w-md-auto"
-                        style={{ backgroundColor: "var(--primary, #0f763f)" }}
-                      >
-                        Informant
-                      </button>
-                      
-                      <div className="btn-group shadow-sm rounded-0 w-100 w-md-auto" role="group">
-                        <button 
-                          onClick={() => {
-                            if (availableHistoryTypes.length === 0) {
-                              setShowWarningModal(true); 
-                            } else {
-                              setShowAddHistoryModal(true);
-                            }
-                          }}
-                          className={`btn btn-sm btn-light border border-secondary-subtle rounded-0 d-flex align-items-center justify-content-center gap-1 text-dark text-hover-primary ${availableHistoryTypes.length === 0 ? 'opacity-50' : ''}`}
-                          style={{ cursor: availableHistoryTypes.length === 0 ? "not-allowed" : "pointer" }}
-                        >
-                          <i className="isax isax-add-square"></i> <span className="d-none d-md-inline">Add</span>
-                        </button>
-                        
-                        <button className="btn btn-sm btn-light border border-secondary-subtle rounded-0 d-flex align-items-center justify-content-center gap-1 text-dark">
-                          <i className="isax isax-edit"></i> <span className="d-none d-md-inline">Edit</span>
-                        </button>
-                        <button className="btn btn-sm btn-light border border-secondary-subtle rounded-0 d-flex align-items-center justify-content-center gap-1 text-danger">
-                          <i className="isax isax-trash"></i> <span className="d-none d-md-inline">Del</span>
-                        </button>
-                      </div>
-                    </div>
+                  
                   </div>
                   
                   {/* table area */}
