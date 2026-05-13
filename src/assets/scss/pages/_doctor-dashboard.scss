@@ -9,7 +9,7 @@
 	margin-bottom: 24px;
 	overflow: hidden;
 	box-shadow: variables.$box-shadow;
-    width: 240px;
+    width: 300px;
     @include mixins.rounded(10px);
     @include mixins.respond-below(md) {
     	margin-bottom: 20px !important;

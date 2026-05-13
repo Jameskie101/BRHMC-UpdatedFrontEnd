@@ -70,6 +70,11 @@ export const doctorSidebarData: DoctorSidebarItem[] = [
     icon: "isax isax-export-1", 
   },
   {
+    label: "Discharge Instruction",
+    path: all_routes.doctorDischargeInstruction,
+    icon: "isax isax-export-1", 
+  },
+  {
     label: "Physician",
     path: all_routes.doctorPhysicain,
     icon: "isax isax-user", 

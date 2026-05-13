@@ -1,9 +1,9 @@
-import DoctorSidebar from "@/components/custom-sidebar/doctorSidebar";
+import NurseSidebar from "@/components/custom-sidebar/nurseSidebar";
 import ImageWithBasePath from "@/components/image-with-base-path";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 
-const MyPatients = () => {
+const PreBill = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   
@@ -94,7 +94,7 @@ const MyPatients = () => {
         <div className="container-fluid px-3 px-lg-5 pt-0">
           <div className="row">
             {/* Profile Sidebar */}
-            <DoctorSidebar />
+            <NurseSidebar />
 
             {/* Specific Patient Record */}
             <div className="col-lg-8 col-xl-9 mt-4 mt-lg-0">
@@ -408,4 +408,4 @@ const MyPatients = () => {
   );
 };
 
-export default MyPatients;
+export default PreBill;

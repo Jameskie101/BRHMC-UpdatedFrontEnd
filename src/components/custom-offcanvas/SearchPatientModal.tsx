@@ -148,7 +148,7 @@ const SearchPatientModal: React.FC<SearchPatientModalProps> = ({ onClose, mockPa
               <div className="modal-body">
                 <div className="row g-3">
                   <div className="col-12">
-                    <label htmlFor="patientId" className="form-label small fw-bold">Patient ID <span className="text-danger">*</span></label>
+                    <label htmlFor="patientId" className="form-label small fw-bold">Patient IDz <span className="text-danger">*</span></label>
                     <div className="input-group">
                       <span className={`input-group-text bg-transparent border-end-0 ${errors.patientId ? 'border-danger' : ''}`}>
                         <i className="isax isax-personalcard" />

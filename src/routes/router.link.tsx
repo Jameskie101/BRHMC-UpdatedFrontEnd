@@ -14,9 +14,22 @@ const DrugsMeds = lazy(() => import("@/pages/doctor-modules/drugsMeds/drugsMeds"
 const Procedures = lazy(() => import("@/pages/doctor-modules/procedures/procedures"));
 const PatientlabDiag = lazy(() => import("@/pages/doctor-modules/patientLabDiag/patientLabDiag"));
 const Desposition = lazy(() => import("@/pages/doctor-modules/desposition/desposition"));
+const DischargeInstruction = lazy(() => import("@/pages/doctor-modules/dischargeinstruction/dischargeInstruction"));
 const Physician = lazy(() => import("@/pages/doctor-modules/physician/physician"));
 const Signatory = lazy(() => import("@/pages/doctor-modules/signatory/signatory"));
 const Diagnosis = lazy(() => import("@/pages/doctor-modules/diagnosis/diagnosis"));
+const DoctorPrintableForms = lazy(() => import("@/pages/doctor-modules/printableForms/printableForms")); 
+const PatientLog     = lazy(() => import("@/pages/doctor-modules/patientLog/patientLog"));
+const ArchiveViewer  = lazy(() => import("@/pages/doctor-modules/archiveViewer/archiveViewer"));
+const Reports        = lazy(() => import("@/pages/doctor-modules/reports/reports"));
+//Nurse Module Components
+const NurseDashboard = lazy (() => import ("@/pages/nurse-modules/nurse-dashboard/nurseDashboard"));
+const RegDetails = lazy(() => import("@/pages/nurse-modules/RegDetails/regDetails")); 
+const Forms = lazy (() => import ("@/pages/nurse-modules/nurseForms/forms"));
+const Accomodation = lazy (() => import ("@/pages/nurse-modules/accomodation/accomodation"));
+const Charges = lazy (() => import ("@/pages/nurse-modules/nurseCharges/charges"));
+const PreBill = lazy (() => import ("@/pages/nurse-modules/PreBill/preBill"));
+const Discharge = lazy (() => import ("@/pages/nurse-modules/nurseDischarge/discharge")); 
 
 //Auth Components
 const Login = lazy(() => import("@/pages/authentication/login/login"));
@@ -98,9 +111,9 @@ export const authRoutes = [
   }
 ];
 
-
-//Custom layout Doctors Module
+//Custom layout 
 export const customLayout = [
+  //Doctors Module
   {
     id: "1",
     path: route.doctorDashboard,
@@ -255,5 +268,139 @@ export const customLayout = [
     route: Route,
     meta_title: "BRHMC",
   },
-];
+  {
+    id: "14-discharge",
+    path: route.doctorDischargeInstruction,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <DischargeInstruction />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+  {
+    id: "14-printable",
+    path: route.doctorPrintableForms,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <DoctorPrintableForms />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
 
+  //Nurse Module
+    {
+    id: "15",
+    path: route.nurseDashboard,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <NurseDashboard />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+      {
+    id: "16",
+    path: route.nurseRegDetails,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <RegDetails />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+  {
+    id: "17",
+    path: route.nurseForms,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <Forms />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+  {
+    id: "18",
+    path: route.nurseAccomodation,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <Accomodation/>
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+  {
+    id: "19",
+    path: route.nurseCharges,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <Charges />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+  {
+    id: "20",
+    path: route.nursePreBill,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <PreBill />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+  {
+    id: "21",
+    path: route.Discharge,
+    element: (
+      <Suspense fallback={suspenseFallback}>
+        <Discharge />
+      </Suspense>
+    ),
+    route: Route,
+    meta_title: "BRHMC",
+  },
+
+  {
+  id: "utility-patientlog",
+  path: route.doctorPatientLog,
+  element: (
+    <Suspense fallback={suspenseFallback}>
+      <PatientLog />
+    </Suspense>
+  ),
+  route: Route,
+  meta_title: "BRHMC",
+},
+{
+  id: "utility-archiveviewer",
+  path: route.doctorArchiveViewer,
+  element: (
+    <Suspense fallback={suspenseFallback}>
+      <ArchiveViewer />
+    </Suspense>
+  ),
+  route: Route,
+  meta_title: "BRHMC",
+},
+{
+  id: "utility-reports",
+  path: route.doctorReports,
+  element: (
+    <Suspense fallback={suspenseFallback}>
+      <Reports />
+    </Suspense>
+  ),
+  route: Route,
+  meta_title: "BRHMC",
+},
+];

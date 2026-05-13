@@ -1,0 +1,819 @@
+import NurseSidebar from "@/components/custom-sidebar/nurseSidebar";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router";
+
+/* patient registration details */
+const RegDetails = () => {
+  const [open, setOpen] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const location = useLocation();
+
+  const [mockPatientProfile, setMockPatientProfile] = useState({
+    hospitalNumber: "000000000777288",
+    lastName: "DO",
+    firstName: "REA",
+    middleName: "MON",
+    address: "111 Estanza, Legazpi City, Albay",
+
+    admissionDetails: {
+      dateOfAdmission: "03/21/2026 02:45 PM",
+      admittingDiagnosis:
+        "TEST ADMITTING DIAGNOSIS. FOR SYSTEM MAINTENANCE PURPOSE, PLEASE IGNORE THIS RECORD",
+      admittingPhysician: "---, --, MD",
+      attendingPhysician: "---",
+      wardAssignment: "Ph Med",
+      typeOfAccomodation: "SERVI",
+      typeOfService: "Medicine",
+      watchId: "260321-039",
+      patage: "26",
+    },
+
+    dischargeDetails: {
+      disdate: "---",
+      dispcode: "---",
+      condcode: "---",
+    },
+
+    accountDetails: {
+      mssClassification: "Initial",
+      philhealthCategory: "---",
+      philhealthRequirement: "---",
+      mayGoHome: "---",
+      statementOfAccount: "---",
+    },
+
+    wardAssignments: [
+      {
+        ward: "Ph Med",
+        from: "03/21/2026 02:45 PM",
+        to: "-",
+        lengthOfStay: "0 day and 1 hr",
+      },
+    ],
+  });
+
+  const [editForm, setEditForm] = useState(mockPatientProfile);
+
+  useEffect(() => {
+    const selectedPatientId = location.state?.selectedPatientId;
+
+    if (selectedPatientId) {
+      setTimeout(() => {}, 1500);
+    }
+  }, [location.state]);
+
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const toggleRef = useRef<HTMLAnchorElement | null>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node) &&
+        toggleRef.current &&
+        !toggleRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
+  const handleOpenUpdateModal = () => {
+    setEditForm(mockPatientProfile);
+    setShowUpdateModal(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setShowUpdateModal(false);
+    setEditForm(mockPatientProfile);
+  };
+
+  const handleProfileChange = (field: string, value: string) => {
+    setEditForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleAdmissionChange = (field: string, value: string) => {
+    setEditForm((prev) => ({
+      ...prev,
+      admissionDetails: {
+        ...prev.admissionDetails,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleDischargeChange = (field: string, value: string) => {
+    setEditForm((prev) => ({
+      ...prev,
+      dischargeDetails: {
+        ...prev.dischargeDetails,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleAccountChange = (field: string, value: string) => {
+    setEditForm((prev) => ({
+      ...prev,
+      accountDetails: {
+        ...prev.accountDetails,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleWardChange = (index: number, field: string, value: string) => {
+    setEditForm((prev) => ({
+      ...prev,
+      wardAssignments: prev.wardAssignments.map((ward, wardIndex) =>
+        wardIndex === index ? { ...ward, [field]: value } : ward
+      ),
+    }));
+  };
+
+  const handleSubmitUpdate = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMockPatientProfile(editForm);
+    setShowUpdateModal(false);
+  };
+
+  const admissionInfo = [
+    {
+      label: "Date of Admission",
+      value: mockPatientProfile.admissionDetails.dateOfAdmission,
+    },
+    {
+      label: "Admitting Diagnosis",
+      value: mockPatientProfile.admissionDetails.admittingDiagnosis,
+    },
+    {
+      label: "Admitting Physician",
+      value: mockPatientProfile.admissionDetails.admittingPhysician,
+    },
+    {
+      label: "Attending Physician",
+      value: mockPatientProfile.admissionDetails.attendingPhysician,
+    },
+    {
+      label: "Ward Assignment",
+      value: mockPatientProfile.admissionDetails.wardAssignment,
+    },
+    {
+      label: "Type of Accommodation",
+      value: mockPatientProfile.admissionDetails.typeOfAccomodation,
+    },
+    {
+      label: "Type of Service",
+      value: mockPatientProfile.admissionDetails.typeOfService,
+    },
+    {
+      label: "Watch ID",
+      value: mockPatientProfile.admissionDetails.watchId,
+    },
+    {
+      label: "Patient Age",
+      value: mockPatientProfile.admissionDetails.patage,
+    },
+  ];
+
+  const dischargeInfo = [
+    {
+      label: "Disdate",
+      value: mockPatientProfile.dischargeDetails.disdate,
+    },
+    {
+      label: "Dispcode",
+      value: mockPatientProfile.dischargeDetails.dispcode,
+    },
+    {
+      label: "Condcode",
+      value: mockPatientProfile.dischargeDetails.condcode,
+    },
+  ];
+
+  const accountInfo = [
+    {
+      label: "MSS Classification",
+      value: mockPatientProfile.accountDetails.mssClassification,
+    },
+    {
+      label: "PhilHealth Category",
+      value: mockPatientProfile.accountDetails.philhealthCategory,
+    },
+    {
+      label: "PhilHealth Requirement",
+      value: mockPatientProfile.accountDetails.philhealthRequirement,
+    },
+    {
+      label: "May Go Home",
+      value: mockPatientProfile.accountDetails.mayGoHome,
+    },
+    {
+      label: "Statement of Account",
+      value: mockPatientProfile.accountDetails.statementOfAccount,
+    },
+  ];
+
+  const SectionHeader = ({ title }: { title: string }) => (
+    <div className="px-3 py-2 border-bottom" style={{ background: "#eef5f8" }}>
+      <h6 className="fw-bold mb-0 text-dark">{title}</h6>
+    </div>
+  );
+
+  const InfoRow = ({ label, value }: { label: string; value: string }) => (
+    <div className="row mb-2">
+      <div className="col-12 col-md-5 text-md-end text-muted small fw-semibold mb-1 mb-md-0">
+        {label}:
+      </div>
+
+      <div className="col-12 col-md-7 small fw-semibold text-dark text-break">
+        {value || "---"}
+      </div>
+    </div>
+  );
+
+  const FormInput = ({
+    label,
+    value,
+    onChange,
+    textarea = false,
+  }: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    textarea?: boolean;
+  }) => (
+    <div className="col-12 col-md-6">
+      <label className="form-label small fw-semibold text-muted">{label}</label>
+
+      {textarea ? (
+        <textarea
+          className="form-control form-control-sm"
+          rows={3}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      ) : (
+        <input
+          type="text"
+          className="form-control form-control-sm"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <style>
+        {`
+          .text-hover-primary:hover {
+            color: var(--primary, #0f763f) !important;
+          }
+
+          .reg-toolbar-btn:disabled {
+            cursor: not-allowed !important;
+          }
+
+          .reg-update-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+          }
+
+          .reg-update-modal {
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 8px;
+          }
+
+          .reg-modal-section-title {
+            background: #eef5f8;
+            border-left: 4px solid var(--primary, #0f763f);
+          }
+        `}
+      </style>
+
+      {/* page content */}
+      <div
+        className="content nurse-content bg-light mt-n4"
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="container-fluid px-3 px-lg-5 pt-0">
+          <div className="row">
+            {/* nurse sidebar */}
+            <NurseSidebar />
+
+            {/* specific patient record */}
+            <div className="col-lg-8 col-xl-9 mt-4 mt-lg-0">
+              <div
+                className="card border-0 shadow-sm rounded-3 overflow-hidden mb-4"
+                style={{
+                  borderTop: "4px solid var(--primary, #0f763f)",
+                }}
+              >
+                {/* patient profile header */}
+                <div className="bg-white px-3 px-md-4 pt-4">
+                  <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 pb-4 border-bottom text-center text-md-start">
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center bg-light shadow-sm flex-shrink-0"
+                      style={{
+                        width: "90px",
+                        height: "90px",
+                        border: "2px solid var(--primary, #0f763f)",
+                      }}
+                    >
+                      <i
+                        className="isax isax-user fs-1"
+                        style={{ color: "var(--primary, #0f763f)" }}
+                      />
+                    </div>
+
+                    <div>
+                      <div className="badge bg-light text-secondary border mb-2 px-2 py-1">
+                        ID: {mockPatientProfile.hospitalNumber}
+                      </div>
+
+                      <h3 className="fw-bold mb-1 text-dark fs-3 fs-md-2">
+                        {mockPatientProfile.lastName},{" "}
+                        {mockPatientProfile.firstName}{" "}
+                        {mockPatientProfile.middleName}
+                      </h3>
+
+                      <div className="text-muted small d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                        <i className="isax isax-location text-danger" />
+                        {mockPatientProfile.address}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* toolbar buttons */}
+                <div className="bg-white px-3 px-md-4 py-3 border-bottom">
+                  <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <h5 className="fw-bold text-dark mb-0 text-center text-md-start text-uppercase">
+                      Registration Details
+                    </h5>
+
+                    <div
+                      className="d-flex flex-wrap justify-content-center justify-content-md-end pb-1 pb-lg-0 ms-md-auto"
+                      style={{ gap: "6px" }}
+                    >
+                      <button
+                        type="button"
+                        className="reg-toolbar-btn btn btn-sm border shadow-sm d-flex align-items-center justify-content-center gap-2 px-3 py-2 text-nowrap text-white fw-bold flex-grow-1 flex-md-grow-0"
+                        style={{
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          backgroundColor: "var(--primary, #0f763f)",
+                          borderColor: "var(--primary, #0f763f)",
+                        }}
+                        onClick={handleOpenUpdateModal}
+                      >
+                        <i className="isax isax-edit"></i>
+                        <span>Update</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* content layout */}
+                <div className="row g-0">
+                  {/* left column */}
+                  <div className="col-12 col-xl-6 border-end">
+                    {/* admission details */}
+                    <div className="border-bottom">
+                      <SectionHeader title="Admission Details" />
+
+                      <div className="p-3">
+                        {admissionInfo.map((item, index) => (
+                          <InfoRow
+                            key={index}
+                            label={item.label}
+                            value={item.value}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* disposition and discharge */}
+                    <div className="border-bottom">
+                      <SectionHeader title="Disposition and Discharge" />
+
+                      <div className="p-3">
+                        {dischargeInfo.map((item, index) => (
+                          <InfoRow
+                            key={index}
+                            label={item.label}
+                            value={item.value}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* account details */}
+                    <div>
+                      <SectionHeader title="Account Details" />
+
+                      <div className="p-3">
+                        <div className="row g-3 text-center">
+                          {accountInfo.map((item, index) => (
+                            <div className="col-6 col-md" key={index}>
+                              <div className="small text-muted fw-semibold mb-2">
+                                {item.label}
+                              </div>
+
+                              <div
+                                className="fw-bold small"
+                                style={{
+                                  color:
+                                    item.value === "Initial"
+                                      ? "var(--primary, #0f763f)"
+                                      : "#343a40",
+                                }}
+                              >
+                                {item.value || "---"}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* right column */}
+                  <div className="col-12 col-xl-6">
+                    <SectionHeader title="Ward and Room Assignment" />
+
+                    <div className="p-3">
+                      <div className="table-responsive">
+                        <table className="table table-sm align-middle mb-0">
+                          <thead>
+                            <tr>
+                              <th className="border-0 text-muted small fw-semibold">
+                                Ward
+                              </th>
+                              <th className="border-0 text-muted small fw-semibold">
+                                From
+                              </th>
+                              <th className="border-0 text-muted small fw-semibold">
+                                To
+                              </th>
+                              <th className="border-0 text-muted small fw-semibold text-end">
+                                Length of Stay
+                              </th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {mockPatientProfile.wardAssignments.map(
+                              (ward, index) => (
+                                <tr key={index}>
+                                  <td className="fw-semibold small">
+                                    {ward.ward}
+                                  </td>
+
+                                  <td className="small text-muted">
+                                    {ward.from}
+                                  </td>
+
+                                  <td className="small text-muted">
+                                    {ward.to}
+                                  </td>
+
+                                  <td className="small text-muted text-end">
+                                    {ward.lengthOfStay}
+                                  </td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div
+                      className="d-none d-xl-block"
+                      style={{ minHeight: "420px" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* update registration modal */}
+     {showUpdateModal && (
+        <div className="reg-update-modal-backdrop">
+          <div className="reg-update-modal shadow-lg">
+            <form onSubmit={handleSubmitUpdate}>
+              <div className="d-flex justify-content-between align-items-center px-3 px-md-4 py-3 border-bottom bg-primary text-white">
+                <div>
+                  <h5 className="fw-bold mb-0 text-white">
+                    Update Registration Details
+                  </h5>
+                  <div className="small opacity-75">
+                    Edit the patient information and save changes.
+                  </div>
+                </div>
+
+        
+              </div>
+
+              <div className="p-3 p-md-4">
+                {/* patient details */}
+                <div className="reg-modal-section-title px-3 py-2 mb-3">
+                  <h6 className="fw-bold mb-0 text-dark">Patient Details</h6>
+                </div>
+
+                <div className="row g-3 mb-4">
+                  <FormInput
+                    label="Hospital Number"
+                    value={editForm.hospitalNumber}
+                    onChange={(value) =>
+                      handleProfileChange("hospitalNumber", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Last Name"
+                    value={editForm.lastName}
+                    onChange={(value) => handleProfileChange("lastName", value)}
+                  />
+
+                  <FormInput
+                    label="First Name"
+                    value={editForm.firstName}
+                    onChange={(value) =>
+                      handleProfileChange("firstName", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Middle Name"
+                    value={editForm.middleName}
+                    onChange={(value) =>
+                      handleProfileChange("middleName", value)
+                    }
+                  />
+
+                  <div className="col-12">
+                    <FormInput
+                      label="Address"
+                      value={editForm.address}
+                      onChange={(value) => handleProfileChange("address", value)}
+                    />
+                  </div>
+                </div>
+
+                {/* admission details */}
+                <div className="reg-modal-section-title px-3 py-2 mb-3">
+                  <h6 className="fw-bold mb-0 text-dark">Admission Details</h6>
+                </div>
+
+                <div className="row g-3 mb-4">
+                  <FormInput
+                    label="Date of Admission"
+                    value={editForm.admissionDetails.dateOfAdmission}
+                    onChange={(value) =>
+                      handleAdmissionChange("dateOfAdmission", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Admitting Physician"
+                    value={editForm.admissionDetails.admittingPhysician}
+                    onChange={(value) =>
+                      handleAdmissionChange("admittingPhysician", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Attending Physician"
+                    value={editForm.admissionDetails.attendingPhysician}
+                    onChange={(value) =>
+                      handleAdmissionChange("attendingPhysician", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Ward Assignment"
+                    value={editForm.admissionDetails.wardAssignment}
+                    onChange={(value) =>
+                      handleAdmissionChange("wardAssignment", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Type of Accommodation"
+                    value={editForm.admissionDetails.typeOfAccomodation}
+                    onChange={(value) =>
+                      handleAdmissionChange("typeOfAccomodation", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Type of Service"
+                    value={editForm.admissionDetails.typeOfService}
+                    onChange={(value) =>
+                      handleAdmissionChange("typeOfService", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Watch ID"
+                    value={editForm.admissionDetails.watchId}
+                    onChange={(value) =>
+                      handleAdmissionChange("watchId", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Patient Age"
+                    value={editForm.admissionDetails.patage}
+                    onChange={(value) => handleAdmissionChange("patage", value)}
+                  />
+
+                  <div className="col-12">
+                    <FormInput
+                      label="Admitting Diagnosis"
+                      value={editForm.admissionDetails.admittingDiagnosis}
+                      onChange={(value) =>
+                        handleAdmissionChange("admittingDiagnosis", value)
+                      }
+                      textarea
+                    />
+                  </div>
+                </div>
+
+                {/* disposition and discharge */}
+                <div className="reg-modal-section-title px-3 py-2 mb-3">
+                  <h6 className="fw-bold mb-0 text-dark">
+                    Disposition and Discharge
+                  </h6>
+                </div>
+
+                <div className="row g-3 mb-4">
+                  <FormInput
+                    label="Disdate"
+                    value={editForm.dischargeDetails.disdate}
+                    onChange={(value) =>
+                      handleDischargeChange("disdate", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Dispcode"
+                    value={editForm.dischargeDetails.dispcode}
+                    onChange={(value) =>
+                      handleDischargeChange("dispcode", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Condcode"
+                    value={editForm.dischargeDetails.condcode}
+                    onChange={(value) =>
+                      handleDischargeChange("condcode", value)
+                    }
+                  />
+                </div>
+
+                {/* account details */}
+                <div className="reg-modal-section-title px-3 py-2 mb-3">
+                  <h6 className="fw-bold mb-0 text-dark">Account Details</h6>
+                </div>
+
+                <div className="row g-3 mb-4">
+                  <FormInput
+                    label="MSS Classification"
+                    value={editForm.accountDetails.mssClassification}
+                    onChange={(value) =>
+                      handleAccountChange("mssClassification", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="PhilHealth Category"
+                    value={editForm.accountDetails.philhealthCategory}
+                    onChange={(value) =>
+                      handleAccountChange("philhealthCategory", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="PhilHealth Requirement"
+                    value={editForm.accountDetails.philhealthRequirement}
+                    onChange={(value) =>
+                      handleAccountChange("philhealthRequirement", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="May Go Home"
+                    value={editForm.accountDetails.mayGoHome}
+                    onChange={(value) =>
+                      handleAccountChange("mayGoHome", value)
+                    }
+                  />
+
+                  <FormInput
+                    label="Statement of Account"
+                    value={editForm.accountDetails.statementOfAccount}
+                    onChange={(value) =>
+                      handleAccountChange("statementOfAccount", value)
+                    }
+                  />
+                </div>
+
+                {/* ward and room assignment */}
+                <div className="reg-modal-section-title px-3 py-2 mb-3">
+                  <h6 className="fw-bold mb-0 text-dark">
+                    Ward and Room Assignment
+                  </h6>
+                </div>
+
+                {editForm.wardAssignments.map((ward, index) => (
+                  <div className="row g-3 mb-3" key={index}>
+                    <FormInput
+                      label="Ward"
+                      value={ward.ward}
+                      onChange={(value) =>
+                        handleWardChange(index, "ward", value)
+                      }
+                    />
+
+                    <FormInput
+                      label="From"
+                      value={ward.from}
+                      onChange={(value) =>
+                        handleWardChange(index, "from", value)
+                      }
+                    />
+
+                    <FormInput
+                      label="To"
+                      value={ward.to}
+                      onChange={(value) => handleWardChange(index, "to", value)}
+                    />
+
+                    <FormInput
+                      label="Length of Stay"
+                      value={ward.lengthOfStay}
+                      onChange={(value) =>
+                        handleWardChange(index, "lengthOfStay", value)
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="d-flex flex-column flex-md-row justify-content-end gap-2 px-3 px-md-4 py-3 border-top bg-light">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-light border fw-semibold px-4"
+                  onClick={handleCloseUpdateModal}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-sm text-white fw-bold px-4"
+                  style={{
+                    backgroundColor: "var(--primary, #0f763f)",
+                    borderColor: "var(--primary, #0f763f)",
+                  }}
+                >
+                  <i className="isax isax-tick-circle me-1"></i>
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* /page content */}
+    </>
+  );
+};
+
+export default RegDetails;

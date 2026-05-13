@@ -425,7 +425,7 @@ const DispositionModule = () => {
                 {/* Toolbar */}
                 <div className="d-flex flex-row flex-wrap justify-content-between align-items-center mb-3 gap-2">
                   <h5 className="fw-bold text-dark mb-0 text-uppercase text-nowrap" style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)" }}>
-                    Disposition
+                    Discharge Instructions
                   </h5>
 
                   <div className="d-flex flex-nowrap justify-content-end gap-2 ms-auto">
@@ -1051,6 +1051,9 @@ const DispositionModule = () => {
         </div>
       )}
 
+      {/* =========================================
+          MODAL: VALIDATION ALERT
+      ========================================= */}
       {showValidationModal && (
         <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1080 }}>
           <div className="modal-dialog modal-dialog-centered modal-sm px-2">

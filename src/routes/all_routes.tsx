@@ -1,7 +1,5 @@
-
 export const all_routes = {
-
-//Doctor Routes
+  // Doctor Routes
   doctorDashboard: "/doctor-dashboard",
   doctorSignsSymps: "/signs-symptoms",
   doctorphysicalExams: "/physical-exams",
@@ -16,16 +14,26 @@ export const all_routes = {
   doctorSignatory: "/signatory",
   doctorDiagnosis: "/diagnosis",
   doctorWardCourse: "/ward-course",
+  doctorDischargeInstruction: "/discharge-instruction",
+  doctorPrintableForms: "/printable-forms",
+  doctorPatientLog: "/patient-log",
+doctorArchiveViewer: "/archive-viewer",
+doctorReports: "/reports",
 
-//Other Pages routes
+  // Nurse Routes
+  nurseDashboard: "/nurse-dashboard",
+  nurseRegDetails: "/Reg-Details",
+  nurseForms: "/nurse-Forms",
+  nurseAccomodation : "/Accomodation",
+  nurseCharges: "/nurse-Charges",
+  nursePreBill: "/Pre-Bill",
+  nurseDischarge: "/nurse-Discharge",
+
+  // Other Pages routes
   login: "/login",
   maintenance: "/maintenance",
   comingSoon: "/coming-soon",
   error404: "/error-404",
   error500: "/error-500",
   unauthorized: "/unauthorized",
-
-
-//Admin routes
-  //admin: "/admin/index",
 };

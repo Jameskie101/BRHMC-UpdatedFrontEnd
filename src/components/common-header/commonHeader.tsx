@@ -10,9 +10,10 @@ import ProfileModal from "../profile-modal/ProfileModal";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const dispatch = useDispatch();
 
-  // Scroll detection – from CommonHeader
+  // scroll detection
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -21,7 +22,13 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Offcanvas mobile menu handler – both headers used the same logic
+  // update time every second
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // offcanvas mobile menu handler
   const onMobileBtn = (e: React.MouseEvent) => {
     e.preventDefault();
     const offcanvasEl = document.getElementById("support_item");
@@ -43,7 +50,7 @@ const Header = () => {
     >
       <div className="container">
         <nav className="navbar navbar-expand-lg header-nav">
-          {/* Mobile button + logo area */}
+          {/* mobile button and logo */}
           <div className="navbar-header">
             <Link id="mobile_btn" to="#" onClick={onMobileBtn}>
               <i className="fa-solid fa-bars" />
@@ -59,7 +66,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop navigation */}
+          {/* desktop navigation */}
           <div className="header-menu">
             <div className="main-menu-wrapper">
               <div className="menu-header">
@@ -84,8 +91,29 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Right side icons */}
-          <ul className="nav header-navbar-rht ">
+          {/* right side icons and time */}
+          <ul className="nav header-navbar-rht align-items-center">
+            {/* added profile-icon class to bypass the SCSS 'display: none' rule */}
+            <li className="nav-item me-2 fw-medium text-dark profile-icon">
+              <span className="d-none d-sm-inline">
+                {currentTime.toLocaleString("en-PH", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              </span>
+              {/* shorter format for very small phones */}
+              <span className="d-inline d-sm-none" style={{ fontSize: '12px' }}>
+                {currentTime.toLocaleString("en-PH", {
+                  hour: "numeric",
+                  minute: "2-digit",
+                })}
+              </span>
+            </li>
             <ProfileModal />
             <li>
               <Link

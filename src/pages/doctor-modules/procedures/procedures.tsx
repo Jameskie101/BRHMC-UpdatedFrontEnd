@@ -115,7 +115,52 @@ const ProcedureAndComplication = () => {
             opacity: 0.5;
             cursor: not-allowed;
           }
+            .acc-info-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1080;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.acc-info-box {
+  width: 360px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.acc-info-title {
+  height: 40px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.acc-info-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--primary, #0f763f);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
         `}
+
+        
       </style>
 
       {/* Breadcrumb Section */}
@@ -303,48 +348,55 @@ const ProcedureAndComplication = () => {
           </div>
         </div>
       </div>
+{/* Delete Confirmation Modal */}
+{showDeleteModal && (
+  <div className="acc-info-backdrop">
+    <div className="acc-info-box shadow-lg">
+      <div className="acc-info-title">
+        <span>Confirm Delete</span>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1060 }}>
-          <div className="modal-dialog modal-sm modal-dialog-centered px-3">
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden' }}>
-              
-              <div className="modal-header border-0 py-3 d-flex align-items-center" style={{ backgroundColor: '#333b45' }}>
-                <h3 className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2" style={{ fontSize: '1.1rem', letterSpacing: '0.5px' }}>
-                  <i className="isax isax-warning-2" style={{ fontSize: '1.5rem' }}></i>
-                  Confirm Delete
-                </h3>
-              </div>
-              
-              <div className="modal-body p-4 bg-white text-center">
-                <i className="isax isax-trash text-danger mb-3 d-block" style={{ fontSize: '2.5rem' }}></i>
-                <p className="mb-0 text-dark fw-medium" style={{ fontSize: '1.05rem' }}>
-                  Are you sure you want to delete the record for <strong className="text-danger text-capitalize">{activeTab}</strong>?
-                </p>
-              </div>
-              
-              <div className="modal-footer border-0 d-flex flex-column flex-sm-row justify-content-center gap-2 p-3" style={{ backgroundColor: '#e2e5e9' }}>
-                <button 
-                  type="button" 
-                  className="btn btn-light rounded-1 px-4 py-2 fw-medium border-secondary-subtle w-100" 
-                  onClick={() => setShowDeleteModal(false)}
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="button" 
-                  className="btn btn-danger rounded-1 px-4 py-2 fw-medium w-100" 
-                  onClick={confirmDelete}
-                >
-                  Delete
-                </button>
-              </div>
+        <button
+          type="button"
+          className="btn-close btn-close-sm"
+          onClick={() => setShowDeleteModal(false)}
+        />
+      </div>
 
-            </div>
+      <div className="d-flex align-items-center gap-3 p-4">
+        <div className="acc-info-icon">
+          <i className="isax isax-trash"></i>
+        </div>
+
+        <div>
+          <div className="fw-bold text-dark mb-1">Delete Record?</div>
+
+          <div className="small fw-semibold text-muted">
+            Are you sure you want to delete the record for{" "}
+            <span className="text-danger text-capitalize">{activeTab}</span>?
           </div>
         </div>
-      )}
+      </div>
+
+      <div className="d-flex justify-content-end gap-2 px-4 pb-3">
+        <button
+          type="button"
+          className="btn btn-sm btn-light fw-bold px-4 border"
+          onClick={() => setShowDeleteModal(false)}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-sm btn-danger fw-bold px-4"
+          onClick={confirmDelete}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 };

@@ -75,10 +75,11 @@ const DrugsAndMedicine = () => {
   // --- State ---
   const [mainRecords, setMainRecords] = useState<MainDrugRecord[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showValidationAlert, setShowValidationAlert] = useState(false); // New state for the custom alert
   const [issuableDrugs, setIssuableDrugs] = useState<IssuableDrug[]>([]);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
-  //paginatio and sorting state
+  //pagination and sorting state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10); 
   const [sortConfig, setSortConfig] = useState<{ field: 'date' | 'item' | null, order: 'asc' | 'desc' }>({ field: null, order: 'desc' });
@@ -191,7 +192,8 @@ const DrugsAndMedicine = () => {
   const handleSaveModal = () => {
     const selectedItems = issuableDrugs.filter((d) => d.selected);
     if (selectedItems.length === 0) {
-      alert("Please select at least one drug to issue.");
+      // Show the custom alert modal instead of window.alert()
+      setShowValidationAlert(true);
       return;
     }
 
@@ -666,6 +668,33 @@ const DrugsAndMedicine = () => {
                   </button>
                 </div>
               </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* new alert modal */}
+      {showValidationAlert && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1070 }}>
+          <div className="modal-dialog modal-dialog-centered modal-sm">
+            <div className="modal-content border-0 p-4 text-center">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="#ffc107" className="mx-auto mb-3" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+              </svg>
+
+              <h5 className="fw-bold mb-2">Selection Required</h5>
+              <p className="text-muted small mb-4">Please select at least one drug to issue.</p>
+              
+              <button 
+                type="button" 
+                className="btn btn-warning fw-bold w-100 border-0" 
+                onClick={() => setShowValidationAlert(false)}
+              >
+                Continue
+              </button>
 
             </div>
           </div>

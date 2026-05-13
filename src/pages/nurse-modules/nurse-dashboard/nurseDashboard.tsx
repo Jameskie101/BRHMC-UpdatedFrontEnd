@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router";
 import { all_routes } from "@/routes/all_routes";
 
-// doctor dashboard component
 const DoctorDashboard = () => {
   const [open, setOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -78,8 +77,9 @@ const DoctorDashboard = () => {
     }, 1000);
   };
 
+  //pag redirect after result click sa regdetails sa nurse page
   const handleConsultationRecordClick = (patientId: string) => {
-    navigate(all_routes.doctorMypatients, { state: { selectedPatientId: patientId } });
+    navigate(all_routes.nurseRegDetails, { state: { selectedPatientId: patientId } });
     handleCloseModal();
   };
 
@@ -107,7 +107,7 @@ const DoctorDashboard = () => {
     <>
       <style>
         {`
-          /* search patient banner */
+          /* ── Search Patient Banner ─────────────────────────── */
           .find-patient-banner {
             cursor: pointer;
             user-select: none;
@@ -183,72 +183,30 @@ const DoctorDashboard = () => {
             50%       { opacity: 0.45; transform: scale(0.7); }
           }
 
-          /* utility cards */
+          /* ── Utility Cards ──────────────────────────────────── */
           .utility-card {
-            background: #ffffff;
-            border: 1px solid #f0f2f5 !important;
-            border-radius: 16px !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid #e9ecef !important;
+            border-radius: 10px !important;
           }
 
           .utility-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06) !important;
-            border-color: transparent !important;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(15, 118, 63, 0.12) !important;
+            border-color: var(--primary, #0f763f) !important;
           }
 
-          .utility-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary, #0f763f);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+          .utility-card:hover .arrow-icon {
+            opacity: 0.6 !important;
+            transform: translateX(3px);
           }
 
-          .utility-card:hover::before {
-            opacity: 1;
-          }
-
-          .utility-icon-wrap {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+          .arrow-icon {
             transition: all 0.3s ease;
           }
 
-          .utility-card:hover .utility-icon-wrap {
-            transform: scale(1.05);
-          }
-
-          .utility-arrow {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            color: #adb5bd;
-          }
-
-          .utility-card:hover .utility-arrow {
-            background: var(--primary, #0f763f);
-            color: #ffffff;
-            transform: translateX(4px);
-          }
-
-          /* responsive tweaks */
+          /* ── Responsive tweaks ──────────────────────────────── */
           @media (max-width: 575.98px) {
             .fp-divider       { display: none !important; }
             .fp-subtitle      { display: none !important; }
@@ -262,14 +220,14 @@ const DoctorDashboard = () => {
         `}
       </style>
 
-      {/* page content */}
+      {/* ── Page Content ── */}
       <div
         className="content doctor-content bg-light mt-n4 d-flex flex-column"
         style={{ minHeight: "100vh" }}
       >
         <div className="container-fluid px-3 px-lg-5 pt-0 flex-grow-1 d-flex flex-column">
 
-          {/* find patient banner */}
+          {/* ── Row 1 : Find Patient Banner ── */}
           <div className="row mb-3">
             <div className="col-12">
               <div
@@ -288,7 +246,7 @@ const DoctorDashboard = () => {
               >
                 <div className="d-flex align-items-center gap-3 px-3 px-sm-4 py-3">
 
-                  {/* icon */}
+                  {/* Icon */}
                   <div className="fp-icon-wrap">
                     <i
                       className="isax isax-user-search"
@@ -296,7 +254,7 @@ const DoctorDashboard = () => {
                     />
                   </div>
 
-                  {/* label group */}
+                  {/* Label group */}
                   <div className="d-flex align-items-center gap-3 flex-grow-1 min-width-0">
                     <div>
                       <div className="d-flex align-items-center gap-2">
@@ -313,13 +271,13 @@ const DoctorDashboard = () => {
                       </p>
                     </div>
 
-                    {/* hidden xs */}
+                    {/* Vertical divider — hidden xs */}
                     <div
                       className="fp-divider"
                       style={{ width: "1px", height: "32px", background: "#dee2e6", flexShrink: 0 }}
                     />
 
-                    {/* hidden xs */}
+                    {/* Hint text — hidden xs */}
                     <span
                       className="text-muted fp-divider"
                       style={{ fontSize: "0.78rem", whiteSpace: "nowrap" }}
@@ -328,7 +286,7 @@ const DoctorDashboard = () => {
                     </span>
                   </div>
 
-                  {/* search pill */}
+                  {/* Search pill — always visible */}
                   <div className="fp-search-pill flex-shrink-0">
                     <i className="isax isax-search-normal-1" style={{ fontSize: "0.8rem", fontWeight: "300" }} />
                     <span>Search</span>
@@ -339,79 +297,78 @@ const DoctorDashboard = () => {
             </div>
           </div>
 
-          {/* sa module utilities */}
+          {/* ── Row 2 : Module Utilities ── */}
           <div className="row flex-grow-1">
             <div className="col-12">
               <div
                 className="card border-0 shadow-sm p-3 p-md-4 h-100"
                 style={{ borderRadius: "12px", borderTop: "4px solid var(--primary, #0f763f)" }}
               >
-              <div className="row mb-4">
+                <div className="row mb-3">
                   <div className="col-12">
-                    <div 
-                      className="p-3 rounded-3" 
-                      style={{ backgroundColor: "rgba(9, 125, 25, 0.06)" }}
-                    >
-                      <div className="d-flex align-items-center gap-2 mb-1">
-                        <i
-                          className="isax isax-element-3"
-                          style={{ fontSize: "1.5rem", color: "var(--primary, #0f763f)", fontWeight: "300" }}
-                        />
-                        <h5 className="fw-bold text-dark mb-0">Module Utilities</h5>
-                      </div>
-                      <p className="text-muted small mb-0 ms-4 ps-1">
-                        Quick access to essential tools and features
-                      </p>
+                    <div className="d-flex align-items-center gap-2 mb-1">
+                      <i
+                        className="isax isax-element-3"
+                        style={{ fontSize: "1.5rem", color: "var(--primary, #0f763f)", fontWeight: "300" }}
+                      />
+                      <h5 className="fw-bold text-dark mb-0">Module Utilities</h5>
                     </div>
+                    <p className="text-muted small mb-0 ms-4 ps-1">
+                      Quick access to essential tools and features
+                    </p>
                   </div>
                 </div>
-                
-            <div className="row g-4">
+                <hr className="my-3" style={{ opacity: 0.15 }} />
+                <div className="row g-3">
                   {[
                     {
                       title: "Patient Log",
                       desc: "List of patients under this ward",
                       icon: "isax isax-document-text",
-                      color: "var(--primary, #0f763f)",
-                      bg: "rgba(15, 118, 63, 0.08)",
-                      path: all_routes.doctorPatientLog // add path reference
+                      color: "var(--primary, #0f763f)"
                     },
                     {
                       title: "Archive Viewer",
                       desc: "Access archive file online",
                       icon: "isax isax-archive",
-                      color: "var(--primary, #0f763f)",
-                      bg: "rgba(15, 118, 63, 0.08)",
-                      path: all_routes.doctorArchiveViewer // add path reference
+                      color: "var(--primary, #0f763f)"
                     },
                     {
                       title: "Reports",
                       desc: "System report generation",
                       icon: "isax isax-chart-square",
-                      color: "var(--primary, #0f763f)",
-                      bg: "rgba(15, 118, 63, 0.08)",
-                      path: all_routes.doctorReports // add path reference
+                      color: "var(--primary, #0f763f)"
                     }
                   ].map((item, index) => (
-                    <div className="col-12 col-md-6 col-lg-4" key={index}>
-                      <div 
-                        className="card h-100 p-4 utility-card"
-                        onClick={() => navigate(item.path)} // handle redirect click
-                      >
+                    <div className="col-12 col-sm-6 col-lg-4" key={index}>
+                      <div className="card shadow-sm utility-card h-100 p-3">
                         <div className="d-flex align-items-center gap-3">
-                          <div 
-                            className="utility-icon-wrap" 
-                            style={{ backgroundColor: item.bg, color: item.color }}
+                          <div
+                            className="rounded-3 d-flex align-items-center justify-content-center"
+                            style={{
+                              backgroundColor: "rgba(15, 118, 63, 0.08)",
+                              width: "52px",
+                              height: "52px",
+                              flexShrink: 0
+                            }}
                           >
-                            <i className={item.icon} style={{ fontSize: "1.8rem" }} />
+                            <i
+                              className={item.icon}
+                              style={{ fontSize: "1.75rem", color: item.color, fontWeight: "300" }}
+                            />
                           </div>
                           <div className="flex-grow-1">
-                            <h6 className="mb-1 fw-bold text-dark">{item.title}</h6>
-                            <p className="small text-muted mb-0">{item.desc}</p>
+                            <h6 className="mb-1 fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
+                              {item.title}
+                            </h6>
+                            <p className="small text-muted mb-0 lh-sm" style={{ fontSize: "0.8rem" }}>
+                              {item.desc}
+                            </p>
                           </div>
-                          <div className="utility-arrow flex-shrink-0">
-                            <i className="isax isax-arrow-right-3" style={{ fontSize: "1.2rem" }} />
-                          </div>
+                          <i
+                            className="isax isax-arrow-right-3 text-muted arrow-icon"
+                            style={{ fontSize: "1rem", opacity: 0.3, fontWeight: "300", flexShrink: 0 }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -424,7 +381,7 @@ const DoctorDashboard = () => {
         </div>
       </div>
 
-      {/* modal */}
+      {/* ── Modal ── */}
       {showModal && (
         <div
           className="modal fade show d-block"

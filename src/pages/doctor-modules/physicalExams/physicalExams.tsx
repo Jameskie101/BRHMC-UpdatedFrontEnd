@@ -3,7 +3,6 @@ import ImageWithBasePath from "@/components/image-with-base-path";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 
-// form constants---
 const EXAM_CATEGORIES = [
   "General Survey",
   "Vital Sign",
@@ -32,7 +31,6 @@ const HEENT_GROUPS = {
   "THROAT AND ORAL": ["Dry lips", "Moist oral mucosa", "Abnormal Tongue"]
 };
 
-// default empty satate sa gabos na examination
 const INITIAL_FORM_STATE: any = {
   "General Survey": { selected: [], otherChecked: false, otherValue: "" },
   "Vital Sign": { palpatory: false, systolic: "", diastolic: "", hr: "", rr: "", temp: "", o2: "", height: "", weight: "", bmi: "" },
@@ -67,11 +65,9 @@ const PhysicalExamination = () => {
     isPersonnel: "No",
   });
 
-  // pag manage state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [activeCategory, setActiveCategory] = useState(EXAM_CATEGORIES[0]);
 
-  //pag track sa specific tabs kung ano ang na click ni user kung add o edit
   const [unlockedCategories, setUnlockedCategories] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<any>(JSON.parse(JSON.stringify(INITIAL_FORM_STATE)));
@@ -102,7 +98,6 @@ const PhysicalExamination = () => {
     return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
 
-  // helpers
   const categoryHasData = (category: string, stateObj: any) => {
     if (!stateObj) return false;
     const catData = stateObj[category];
@@ -133,12 +128,11 @@ const PhysicalExamination = () => {
     }));
   };
 
-  //toolbars handlers
   const handleAdd = () => setUnlockedCategories((prev) => [...new Set([...prev, activeCategory])]);
   const handleEdit = () => setUnlockedCategories((prev) => [...new Set([...prev, activeCategory])]);
   const handleSave = () => {
     setSavedState(JSON.parse(JSON.stringify(formData)));
-    setUnlockedCategories([]); // Locks all forms again after saving
+    setUnlockedCategories([]); 
   };
   const handleCancel = () => {
     setFormData(JSON.parse(JSON.stringify(savedState || INITIAL_FORM_STATE)));
@@ -161,13 +155,11 @@ const PhysicalExamination = () => {
     setShowDeleteModal(false);
   };
 
-  // sa ui dervied sate
   const catHasData = categoryHasData(activeCategory, savedState); 
   const isUnlocked = unlockedCategories.includes(activeCategory);
   const isAnyUnlocked = unlockedCategories.length > 0;
   const showForm = catHasData || isUnlocked;
 
-  //ui renderer sa specific tabs
   const renderOtherTextarea = (category: string) => {
     const currentText = formData[category].otherValue || "";
     const remainingChars = 255 - currentText.length;
@@ -420,24 +412,75 @@ const PhysicalExamination = () => {
           @media (max-width: 991px) {
             .vital-group-margin { margin-top: 0.5rem; }
           }
+            .acc-info-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1080;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.acc-info-box {
+  width: 360px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.acc-info-title {
+  height: 40px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.acc-info-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--primary, #0f763f);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.acc-info-icon-danger {
+  background: #dc3545;
+}
+
+.acc-info-action-btn {
+  border-radius: 4px;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 575.98px) {
+  .acc-info-box {
+    width: 100%;
+  }
+
+  .acc-info-footer {
+    flex-direction: column;
+  }
+
+  .acc-info-footer button {
+    width: 100%;
+  }
+}
         `}
       </style>
-      
-      <div className="breadcrumb-bar">
-        <div className="container">
-          <div className="row align-items-center inner-banner">
-            <div className="col-md-12 col-12 text-center">
-              <nav aria-label="breadcrumb" className="page-breadcrumb">
-                <h2 className="breadcrumb-title">Physical Examination</h2>
-              </nav>
-            </div>
-          </div>
-        </div>
-        <div className="breadcrumb-bg">
-          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-01.png" alt="img" className="breadcrumb-bg-01" />
-          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-02.png" alt="img" className="breadcrumb-bg-02" />
-        </div>
-      </div>
+   
 
       <div className="content doctor-content bg-light mt-n4 d-flex flex-column" style={{ minHeight: "100vh" }}>
         <div className="container-fluid px-3 px-lg-5 pt-0 flex-grow-1 d-flex flex-column">
@@ -471,34 +514,13 @@ const PhysicalExamination = () => {
                   </div>
                 </div>
 
-                <div className="row g-2 mb-4 text-nowrap">
-                  {[
-                    { label: "Birthdate", value: mockPatientProfile.birthdate },
-                    { label: "Age", value: mockPatientProfile.age },
-                    { label: "Civil Status", value: mockPatientProfile.civilStatus },
-                    { label: "Gender", value: mockPatientProfile.gender },
-                    { label: "Employment Status", value: mockPatientProfile.employmentStatus },
-                    { label: "Nationality", value: mockPatientProfile.nationality },
-                    { label: "Religion", value: mockPatientProfile.religion },
-                    { label: "Senior Citizen No.", value: mockPatientProfile.seniorCitizenNo },
-                    { label: "MSS No.", value: mockPatientProfile.mssNo },
-                    { label: "Hospital/DOH Personnel", value: mockPatientProfile.isPersonnel },
-                  ].map((item, idx) => (
-                    <div className="col-6 col-sm-4 col-md-3 col-xl-2" key={idx}>
-                      <div className="px-3 py-2 bg-light rounded-2 h-100 border border-light-subtle text-center text-sm-start">
-                        <span className="text-muted d-block text-truncate mb-0" style={{ fontSize: "0.65rem", textTransform: "uppercase" }}>{item.label}</span>
-                        <span className="fw-bold text-dark d-block text-truncate" style={{ fontSize: "0.85rem" }}>{item.value || "—"}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
+              
                 <div className="d-flex flex-column flex-grow-1 mb-4">
                   
-                  <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-3 gap-3">
-                    <h5 className="fw-bold text-dark mb-0 text-center text-lg-start text-uppercase">Physical Examination</h5>
-                    
-                    <div className="d-flex flex-wrap justify-content-center justify-content-lg-end pb-1 pb-lg-0 ms-lg-auto" style={{ gap: "4px" }}>
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+  <h5 className="fw-bold text-dark mb-0 text-center text-md-start text-uppercase">Physical Examination</h5>
+  
+  <div className="d-flex flex-wrap justify-content-center justify-content-md-end pb-1 pb-md-0 ms-md-auto" style={{ gap: "4px" }}>
                       <button 
                         onClick={handleAdd} 
                         disabled={catHasData || isUnlocked}
@@ -605,47 +627,54 @@ const PhysicalExamination = () => {
         </div>
       </div>
 
-      {showDeleteModal && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1060 }}>
-          <div className="modal-dialog modal-sm modal-dialog-centered px-3">
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden' }}>
-              
-              <div className="modal-header border-0 py-3 d-flex align-items-center" style={{ backgroundColor: '#333b45' }}>
-                <h3 className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2" style={{ fontSize: '1.1rem', letterSpacing: '0.5px' }}>
-                  <i className="isax isax-warning-2" style={{ fontSize: '1.5rem' }}></i>
-                  Confirm Delete
-                </h3>
-             
-              </div>
-              
-              <div className="modal-body p-4 bg-white text-center">
-                <i className="isax isax-trash text-danger mb-3 d-block" style={{ fontSize: '2.5rem' }}></i>
-                <p className="mb-0 text-dark fw-medium" style={{ fontSize: '1.05rem' }}>
-                  Are you sure you want to clear the record for <strong className="text-danger">{activeCategory}</strong>?
-                </p>
-              </div>
-              
-              <div className="modal-footer border-0 d-flex justify-content-center gap-2 p-3" style={{ backgroundColor: '#e2e5e9' }}>
-                <button 
-                  type="button" 
-                  className="btn btn-light rounded-1 px-4 py-2 fw-medium border-secondary-subtle" 
-                  onClick={() => setShowDeleteModal(false)}
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="button" 
-                  className="btn btn-danger rounded-1 px-4 py-2 fw-medium" 
-                  onClick={confirmDelete}
-                >
-                  Delete
-                </button>
-              </div>
+    {showDeleteModal && (
+  <div className="acc-info-backdrop">
+    <div className="acc-info-box shadow-lg">
+      <div className="acc-info-title">
+        <span>Confirm Delete</span>
 
-            </div>
+        <button
+          type="button"
+          className="btn-close btn-close-sm"
+          onClick={() => setShowDeleteModal(false)}
+        />
+      </div>
+
+      <div className="d-flex align-items-center gap-3 p-4">
+        <div className="acc-info-icon acc-info-icon-danger">
+          <i className="isax isax-trash"></i>
+        </div>
+
+        <div>
+          <div className="fw-bold text-dark mb-1">Clear Record?</div>
+
+          <div className="small fw-semibold text-muted">
+            Are you sure you want to clear the record for{" "}
+            <span className="text-danger fw-bold">{activeCategory}</span>?
           </div>
         </div>
-      )}
+      </div>
+
+      <div className="acc-info-footer d-flex justify-content-end gap-2 px-4 pb-3">
+        <button
+          type="button"
+          className="btn btn-sm btn-light fw-bold px-4 border acc-info-action-btn"
+          onClick={() => setShowDeleteModal(false)}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-sm btn-danger fw-bold px-4 acc-info-action-btn"
+          onClick={confirmDelete}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 };

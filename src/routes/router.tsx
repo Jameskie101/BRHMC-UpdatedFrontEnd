@@ -56,7 +56,7 @@ if (isRestoring) {
         }
       />
 
-        {/* only Doctors and admin can access docotr routes */} 
+        {/* only Doctor can access docotr routes */} 
         <Route element = {<AuthGuard requiredRoleLevel={1} />}>  {/* Comment this line to disable auth guard for testing */}
         <Route element={<CommonLayout />}>
           {customLayout.map((route, idx) => (
@@ -64,6 +64,17 @@ if (isRestoring) {
           ))}
         </Route>
         </Route> {/* Comment this line to disable auth guard for testing */}
+
+        
+        {/* only Nurse can access docotr routes */} 
+        <Route element = {<AuthGuard requiredRoleLevel={2} />}>  {/* Comment this line to disable auth guard for testing */}
+        <Route element={<CommonLayout />}>
+          {customLayout.map((route, idx) => (
+            <Route path={route.path} element={route.element} key={idx} />
+          ))}
+        </Route>
+        </Route> {/* Comment this line to disable auth guard for testing */}
+
 
         {/* Not yet implemented */}
         {/* <Route element ={<AuthGuard requiredRoleLevel={0} />}> */}
