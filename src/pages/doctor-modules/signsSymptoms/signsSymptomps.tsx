@@ -550,7 +550,7 @@ const PatientSignsAndSymptoms = () => {
 
                 <div className="small fw-semibold text-muted">
                   Are you sure you want to clear the current signs and symptoms
-                  form?
+                  form? ww
                 </div>
               </div>
             </div>
