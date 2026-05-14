@@ -1,6 +1,5 @@
 import DoctorSidebar from "@/components/custom-sidebar/doctorSidebar";
-import ImageWithBasePath from "@/components/image-with-base-path";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 
 // helper function para s date and time
@@ -32,7 +31,6 @@ const ALL_HISTORY_TYPES = [
 ];
 
 const PatientHistory = () => {
-  const [open, setOpen] = useState(false);
   const location = useLocation();
 
   // su sa informant modal state
@@ -63,7 +61,7 @@ const PatientHistory = () => {
   const [viewingRecord, setViewingRecord] = useState<any | null>(null);
 
   // dummy data profle
-  const [mockPatientProfile, setMockPatientProfile] = useState({
+  const [mockPatientProfile] = useState({
     hospitalNumber: "000000000777288",
     lastName: "DO",
     firstName: "REA",
@@ -92,8 +90,6 @@ const PatientHistory = () => {
     },
   ]);
 
-  const [activeTab, setActiveTab] = useState("PhilHealth");
-
   const isTableEmpty = historyRecords.length === 0;
 
   const availableHistoryTypes = ALL_HISTORY_TYPES.filter(
@@ -111,29 +107,11 @@ const PatientHistory = () => {
 
   useEffect(() => {
     const selectedPatientId = location.state?.selectedPatientId;
+
     if (selectedPatientId) {
       setTimeout(() => {}, 1500);
     }
   }, [location.state]);
-
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const toggleRef = useRef<HTMLAnchorElement | null>(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node) &&
-        toggleRef.current &&
-        !toggleRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("click", handleOutsideClick);
-    return () => document.removeEventListener("click", handleOutsideClick);
-  }, []);
 
   const handleOpenAddHistory = () => {
     setIsEditing(false);
@@ -454,8 +432,6 @@ const PatientHistory = () => {
               >
                 {/* profile header */}
                 <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 mb-4 pb-4 border-bottom text-center text-md-start position-relative">
-                  <div className="position-absolute top-0 end-0 d-none d-md-block"></div>
-
                   <div
                     className="rounded-circle d-flex align-items-center justify-content-center bg-light shadow-sm flex-shrink-0"
                     style={{
@@ -496,71 +472,76 @@ const PatientHistory = () => {
                     </h5>
 
                     <div className="history-action-bar d-flex flex-row align-items-center justify-content-end gap-2 ms-lg-auto">
-                      <button
-                        onClick={() => setShowInformantModal(true)}
-                        className="btn btn-sm text-white fw-semibold rounded-1 shadow-sm px-4 border-0 history-action-btn"
-                        style={{ backgroundColor: "var(--primary, #0f763f)" }}
+                     <button
+  onClick={() => setShowInformantModal(true)}
+  className="btn btn-sm text-white fw-semibold rounded-1 shadow-sm px-4 border-0 history-action-btn d-flex align-items-center justify-content-center gap-1"
+  style={{ backgroundColor: "var(--primary, #0f763f)" }}
+>
+  <i className="isax isax-profile-2user"></i>
+  <span>Informant</span>
+</button>
+
+                      <div
+                        className={
+                          isTableEmpty
+                            ? "d-flex d-md-none d-lg-flex gap-2"
+                            : "d-flex gap-2"
+                        }
                       >
-                        Informant
-                      </button>
-
-                      {!isTableEmpty && (
-                        <>
-                          <button
-                            onClick={handleOpenAddHistory}
-                            className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark text-hover-primary history-action-btn ${
+                        <button
+                          onClick={handleOpenAddHistory}
+                          className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark text-hover-primary history-action-btn ${
+                            availableHistoryTypes.length === 0 && !isEditing
+                              ? "opacity-50"
+                              : ""
+                          }`}
+                          style={{
+                            cursor:
                               availableHistoryTypes.length === 0 && !isEditing
-                                ? "opacity-50"
-                                : ""
-                            }`}
-                            style={{
-                              cursor:
-                                availableHistoryTypes.length === 0 && !isEditing
-                                  ? "not-allowed"
-                                  : "pointer",
-                            }}
-                          >
-                            <i className="isax isax-add-square"></i>
-                            <span>Add</span>
-                          </button>
+                                ? "not-allowed"
+                                : "pointer",
+                          }}
+                        >
+                          <i className="isax isax-add-square"></i>
+                          <span>Add</span>
+                        </button>
 
-                          <button
-                            onClick={handleOpenEditHistory}
-                            disabled={!selectedRecordId}
-                            className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark history-action-btn ${
-                              selectedRecordId
-                                ? "text-hover-primary"
-                                : "opacity-50"
-                            }`}
-                            style={{
-                              cursor: selectedRecordId
-                                ? "pointer"
-                                : "not-allowed",
-                            }}
-                          >
-                            <i className="isax isax-edit"></i>
-                            <span>Edit</span>
-                          </button>
+                        <button
+                          onClick={handleOpenEditHistory}
+                          disabled={!selectedRecordId}
+                          className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark history-action-btn ${
+                            selectedRecordId
+                              ? "text-hover-primary"
+                              : "opacity-50"
+                          }`}
+                          style={{
+                            cursor: selectedRecordId
+                              ? "pointer"
+                              : "not-allowed",
+                          }}
+                        >
+                          <i className="isax isax-edit"></i>
+                          <span>Edit</span>
+                        </button>
 
-                          <button
-                            onClick={handleDeleteHistoryClick}
-                            disabled={!selectedRecordId}
-                            className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 history-action-btn ${
-                              selectedRecordId
-                                ? "text-danger"
-                                : "text-dark opacity-50"
-                            }`}
-                            style={{
-                              cursor: selectedRecordId
-                                ? "pointer"
-                                : "not-allowed",
-                            }}
-                          >
-                            <i className="isax isax-trash"></i>
-                            <span>Del</span>
-                          </button>
-                        </>
-                      )}
+                        <button
+                          onClick={handleDeleteHistoryClick}
+                          disabled={!selectedRecordId}
+                          className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 history-action-btn ${
+                            selectedRecordId
+                              ? "text-danger"
+                              : "text-dark opacity-50"
+                          }`}
+                          style={{
+                            cursor: selectedRecordId
+                              ? "pointer"
+                              : "not-allowed",
+                          }}
+                        >
+                          <i className="isax isax-trash"></i>
+                          <span>Del</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -575,15 +556,19 @@ const PatientHistory = () => {
                           <th className="fw-semibold text-secondary py-3 ps-3 border-bottom text-nowrap">
                             History
                           </th>
+
                           <th className="fw-semibold text-secondary py-3 border-bottom d-none d-md-table-cell">
                             Details
                           </th>
+
                           <th className="fw-semibold text-secondary py-3 border-bottom text-nowrap d-none d-md-table-cell">
                             Date Entered
                           </th>
+
                           <th className="fw-semibold text-secondary py-3 pe-3 border-bottom text-nowrap d-none d-lg-table-cell">
                             Entry By
                           </th>
+
                           <th className="fw-semibold text-secondary py-3 pe-3 border-bottom text-center d-md-none">
                             Action
                           </th>
@@ -955,7 +940,9 @@ const PatientHistory = () => {
                   style={{ fontSize: "1.1rem", letterSpacing: "0.5px" }}
                 >
                   <i
-                    className={isEditing ? "isax isax-edit" : "isax isax-add-square"}
+                    className={
+                      isEditing ? "isax isax-edit" : "isax isax-add-square"
+                    }
                     style={{ fontSize: "1.75rem" }}
                   ></i>
                   {isEditing ? "EDIT PATIENT HISTORY" : "ADD PATIENT HISTORY"}

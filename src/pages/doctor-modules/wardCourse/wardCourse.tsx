@@ -159,22 +159,7 @@ const CourseInTheWard = () => {
         `}
       </style>
 
-      {/* Breadcrumb Section */}
-      <div className="breadcrumb-bar">
-        <div className="container">
-          <div className="row align-items-center inner-banner">
-            <div className="col-md-12 col-12 text-center">
-              <nav aria-label="breadcrumb" className="page-breadcrumb">
-                <h2 className="breadcrumb-title">Course in the Ward</h2>
-              </nav>
-            </div>
-          </div>
-        </div>
-        <div className="breadcrumb-bg">
-          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-01.png" alt="img" className="breadcrumb-bg-01" />
-          <ImageWithBasePath src="assets/img/bg/breadcrumb-bg-02.png" alt="img" className="breadcrumb-bg-02" />
-        </div>
-      </div>
+    
 
       <div className="content doctor-content bg-light mt-n4 d-flex flex-column" style={{ minHeight: "100vh" }}>
         <div className="container-fluid px-3 px-lg-5 pt-0 flex-grow-1 d-flex flex-column">
@@ -208,28 +193,7 @@ const CourseInTheWard = () => {
                   </div>
                 </div>
 
-                <div className="row g-2 mb-4 text-nowrap">
-                  {[
-                    { label: "Birthdate", value: mockPatientProfile.birthdate },
-                    { label: "Age", value: mockPatientProfile.age },
-                    { label: "Civil Status", value: mockPatientProfile.civilStatus },
-                    { label: "Gender", value: mockPatientProfile.gender },
-                    { label: "Employment Status", value: mockPatientProfile.employmentStatus },
-                    { label: "Nationality", value: mockPatientProfile.nationality },
-                    { label: "Religion", value: mockPatientProfile.religion },
-                    { label: "Senior Citizen No.", value: mockPatientProfile.seniorCitizenNo },
-                    { label: "MSS No.", value: mockPatientProfile.mssNo },
-                    { label: "Hospital/DOH Personnel", value: mockPatientProfile.isPersonnel },
-                  ].map((item, idx) => (
-                    <div className="col-6 col-sm-4 col-md-3 col-xl-2" key={idx}>
-                      <div className="px-3 py-2 bg-light rounded-2 h-100 border border-light-subtle text-center text-sm-start flex-column d-flex justify-content-center">
-                        <span className="text-muted d-block text-truncate mb-0" style={{ fontSize: "0.65rem", textTransform: "uppercase" }}>{item.label}</span>
-                        <span className="fw-bold text-dark d-block text-truncate" style={{ fontSize: "0.85rem" }}>{item.value || "—"}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
+              
                 <div className="d-flex flex-column flex-grow-1 mb-4">
                   {/* table actions tolbar */}
                   <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
