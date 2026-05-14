@@ -6,17 +6,17 @@ import { useLocation } from "react-router";
 // helper function para s date and time
 const getCurrentDateTime = () => {
   const now = new Date();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
   const yyyy = now.getFullYear();
-  
+
   let hours = now.getHours();
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+
   hours = hours % 12;
   hours = hours ? hours : 12;
-  const hh = String(hours).padStart(2, '0');
+  const hh = String(hours).padStart(2, "0");
 
   return `${mm}/${dd}/${yyyy} ${hh}:${minutes} ${ampm}`;
 };
@@ -28,37 +28,40 @@ const ALL_HISTORY_TYPES = [
   "Growth and Dev",
   "Past History",
   "Family History",
-  "Personal/Social History"
+  "Personal/Social History",
 ];
 
 const PatientHistory = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  
+
   // su sa informant modal state
   const [showInformantModal, setShowInformantModal] = useState(false);
   const [informantInput, setInformantInput] = useState("Family Member");
-  const [otherInformantInput, setOtherInformantInput] = useState(""); 
+  const [otherInformantInput, setOtherInformantInput] = useState("");
   const [reliabilityInput, setReliabilityInput] = useState("100");
-  const [savedInformant, setSavedInformant] = useState<{ type: string; reliability: string } | null>(null);
+  const [savedInformant, setSavedInformant] = useState<{
+    type: string;
+    reliability: string;
+  } | null>(null);
 
   // pag add History Modal State
   const [showAddHistoryModal, setShowAddHistoryModal] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); 
-  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null); 
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null);
 
   const [newHistoryDate, setNewHistoryDate] = useState(getCurrentDateTime());
   const [newHistoryType, setNewHistoryType] = useState("");
   const [newHistoryDetails, setNewHistoryDetails] = useState("");
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<string[]>([]);
-  
-  // pag Warning / Confirm Modal States 
+
+  // pag Warning / Confirm Modal States
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
 
-  // pag Mobile View Record Modal State 
+  // pag Mobile View Record Modal State
   const [viewingRecord, setViewingRecord] = useState<any | null>(null);
-  
+
   // dummy data profle
   const [mockPatientProfile, setMockPatientProfile] = useState({
     hospitalNumber: "000000000777288",
@@ -70,8 +73,8 @@ const PatientHistory = () => {
     age: "26 Yrs. Old",
     civilStatus: "Married",
     gender: "Male",
-    employmentStatus: "Employed", 
-    nationality: "Filipino",    
+    employmentStatus: "Employed",
+    nationality: "Filipino",
     religion: "Catholic",
     seniorCitizenNo: "",
     mssNo: "",
@@ -83,16 +86,20 @@ const PatientHistory = () => {
       id: 1,
       history: "Chief Complaint",
       details: "Please ignore this record. Phhilhealth oecb live test in progress.",
-      parsedDetails: null, 
+      parsedDetails: null,
       dateEntered: "03/21/2026 02:45 PM",
       entryBy: "LIQUE, ROWAN M",
-    }
+    },
   ]);
 
   const [activeTab, setActiveTab] = useState("PhilHealth");
 
+  const isTableEmpty = historyRecords.length === 0;
+
   const availableHistoryTypes = ALL_HISTORY_TYPES.filter(
-    (type) => !historyRecords.some((record) => record.history === type) || (isEditing && type === newHistoryType)
+    (type) =>
+      !historyRecords.some((record) => record.history === type) ||
+      (isEditing && type === newHistoryType)
   );
 
   useEffect(() => {
@@ -123,19 +130,36 @@ const PatientHistory = () => {
         setOpen(false);
       }
     };
+
     document.addEventListener("click", handleOutsideClick);
     return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
 
+  const handleOpenAddHistory = () => {
+    setIsEditing(false);
+    setNewHistoryDate(getCurrentDateTime());
+    setNewHistoryType("");
+    setNewHistoryDetails("");
+    setSelectedCheckboxes([]);
+
+    if (availableHistoryTypes.length === 0) {
+      setShowWarningModal(true);
+    } else {
+      setShowAddHistoryModal(true);
+    }
+  };
+
   const handleSaveInformant = () => {
-    const finalInformantType = informantInput === "Other" && otherInformantInput.trim() !== "" 
-      ? otherInformantInput 
-      : informantInput;
+    const finalInformantType =
+      informantInput === "Other" && otherInformantInput.trim() !== ""
+        ? otherInformantInput
+        : informantInput;
 
     setSavedInformant({
       type: finalInformantType,
       reliability: reliabilityInput,
     });
+
     setShowInformantModal(false);
   };
 
@@ -144,45 +168,61 @@ const PatientHistory = () => {
       if (prev.includes(option)) {
         if (option === "Other") setNewHistoryDetails("");
         return prev.filter((item) => item !== option);
-      } else {
-        return [...prev, option];
       }
+
+      return [...prev, option];
     });
   };
 
   const getCheckboxOptions = (type: string) => {
     if (type === "Family History" || type === "Past History") {
-      return ["Hypertension", "Diabetes Mellitus", "Asthma", "Allergy to food/drug", "Tuberculosis", "Goiter", "Cancer", "Other"];
+      return [
+        "Hypertension",
+        "Diabetes Mellitus",
+        "Asthma",
+        "Allergy to food/drug",
+        "Tuberculosis",
+        "Goiter",
+        "Cancer",
+        "Other",
+      ];
     }
+
     if (type === "Personal/Social History") {
       return ["Smoking", "Alcohol", "Illegal Drug", "Diet", "Other"];
     }
-    return []; 
+
+    return [];
   };
 
   const openEditModalForRecord = (record: any) => {
     setIsEditing(true);
+    setSelectedRecordId(record.id);
     setNewHistoryDate(record.dateEntered);
     setNewHistoryType(record.history);
-    
+
     if (record.parsedDetails) {
-      let checks = [...record.parsedDetails.checked];
+      const checks = [...record.parsedDetails.checked];
+
       if (record.parsedDetails.notes && !checks.includes("Other")) {
         checks.push("Other");
       }
+
       setSelectedCheckboxes(checks);
       setNewHistoryDetails(record.parsedDetails.notes || "");
     } else {
       setSelectedCheckboxes([]);
       setNewHistoryDetails(record.details || "");
     }
-    
+
     setShowAddHistoryModal(true);
   };
 
   const handleOpenEditHistory = () => {
     if (!selectedRecordId) return;
-    const recordToEdit = historyRecords.find(r => r.id === selectedRecordId);
+
+    const recordToEdit = historyRecords.find((r) => r.id === selectedRecordId);
+
     if (recordToEdit) {
       openEditModalForRecord(recordToEdit);
     }
@@ -195,7 +235,8 @@ const PatientHistory = () => {
 
   const confirmDeleteHistory = () => {
     if (!selectedRecordId) return;
-    setHistoryRecords(prev => prev.filter(r => r.id !== selectedRecordId));
+
+    setHistoryRecords((prev) => prev.filter((r) => r.id !== selectedRecordId));
     setSelectedRecordId(null);
     setShowDeleteConfirmModal(false);
   };
@@ -208,16 +249,19 @@ const PatientHistory = () => {
     const options = getCheckboxOptions(newHistoryType);
 
     if (options.length > 0) {
-      const validOptions = options.filter(opt => opt !== "Other");
-      const checkedOptions = validOptions.filter(opt => selectedCheckboxes.includes(opt));
-      const uncheckedOptions = validOptions.filter(opt => !selectedCheckboxes.includes(opt));
+      const validOptions = options.filter((opt) => opt !== "Other");
+      const checkedOptions = validOptions.filter((opt) =>
+        selectedCheckboxes.includes(opt)
+      );
+      const uncheckedOptions = validOptions.filter(
+        (opt) => !selectedCheckboxes.includes(opt)
+      );
 
       structuredParsedDetails = {
         checked: checkedOptions,
         unchecked: uncheckedOptions,
-        notes: newHistoryDetails.trim()
+        notes: newHistoryDetails.trim(),
       };
-      
     } else {
       detailsText = newHistoryDetails.trim() || "No details provided";
     }
@@ -225,20 +269,25 @@ const PatientHistory = () => {
     const newRecord = {
       id: isEditing && selectedRecordId ? selectedRecordId : Date.now(),
       history: newHistoryType,
-      details: detailsText, 
-      parsedDetails: structuredParsedDetails, 
+      details: detailsText,
+      parsedDetails: structuredParsedDetails,
       dateEntered: newHistoryDate,
-      entryBy: isEditing && selectedRecordId 
-        ? historyRecords.find(r => r.id === selectedRecordId)?.entryBy || "CURRENT_USER" 
-        : "CURRENT_USER",
+      entryBy:
+        isEditing && selectedRecordId
+          ? historyRecords.find((r) => r.id === selectedRecordId)?.entryBy ||
+            "CURRENT_USER"
+          : "CURRENT_USER",
     };
 
     if (isEditing && selectedRecordId) {
-      setHistoryRecords(prevRecords => prevRecords.map(r => r.id === selectedRecordId ? newRecord : r));
+      setHistoryRecords((prevRecords) =>
+        prevRecords.map((r) => (r.id === selectedRecordId ? newRecord : r))
+      );
     } else {
-      setHistoryRecords(prevRecords => [...prevRecords, newRecord]);
+      setHistoryRecords((prevRecords) => [...prevRecords, newRecord]);
+      setSelectedRecordId(newRecord.id);
     }
-    
+
     setNewHistoryType("");
     setNewHistoryDetails("");
     setSelectedCheckboxes([]);
@@ -249,31 +298,55 @@ const PatientHistory = () => {
   const hasCheckboxes = getCheckboxOptions(newHistoryType).length > 0;
   const isOtherChecked = selectedCheckboxes.includes("Other");
   const isTextareaEnabled = !hasCheckboxes || isOtherChecked;
-  const isSaveHistoryDisabled = !newHistoryType || (isOtherChecked && newHistoryDetails.trim() === "");
+  const isSaveHistoryDisabled =
+    !newHistoryType || (isOtherChecked && newHistoryDetails.trim() === "");
 
   const renderRecordDetails = (record: any) => {
     if (record.parsedDetails) {
       return (
         <div className="d-flex flex-wrap gap-2 align-items-center">
           {record.parsedDetails.checked.map((item: string) => (
-            <span key={`checked-${item}`} className="badge rounded-1 px-2 py-1 fw-semibold d-flex align-items-center gap-1" style={{ backgroundColor: 'rgba(15, 118, 63, 0.1)', color: 'var(--primary, #0f763f)', border: '1px solid rgba(15, 118, 63, 0.25)' }}>
-              <span style={{ fontSize: '1rem', lineHeight: '1' }}>+</span> {item}
+            <span
+              key={`checked-${item}`}
+              className="badge rounded-1 px-2 py-1 fw-semibold d-flex align-items-center gap-1"
+              style={{
+                backgroundColor: "rgba(15, 118, 63, 0.1)",
+                color: "var(--primary, #0f763f)",
+                border: "1px solid rgba(15, 118, 63, 0.25)",
+              }}
+            >
+              <span style={{ fontSize: "1rem", lineHeight: "1" }}>+</span>
+              {item}
             </span>
           ))}
+
           {record.parsedDetails.unchecked.map((item: string) => (
-            <span key={`unchecked-${item}`} className="badge rounded-1 px-2 py-1 fw-medium text-secondary d-flex align-items-center gap-1" style={{ backgroundColor: '#f8f9fa', border: '1px solid #dee2e6' }}>
-              <span style={{ fontSize: '1rem', lineHeight: '1' }}>-</span> {item}
+            <span
+              key={`unchecked-${item}`}
+              className="badge rounded-1 px-2 py-1 fw-medium text-secondary d-flex align-items-center gap-1"
+              style={{
+                backgroundColor: "#f8f9fa",
+                border: "1px solid #dee2e6",
+              }}
+            >
+              <span style={{ fontSize: "1rem", lineHeight: "1" }}>-</span>
+              {item}
             </span>
           ))}
+
           {record.parsedDetails.notes && (
-            <span className="text-dark ms-1 mt-1 fw-medium" style={{ fontSize: '0.9rem' }}>
-              <span className="text-muted fw-bold me-2">Others:</span> 
+            <span
+              className="text-dark ms-1 mt-1 fw-medium"
+              style={{ fontSize: "0.9rem" }}
+            >
+              <span className="text-muted fw-bold me-2">Others:</span>
               {record.parsedDetails.notes}
             </span>
           )}
         </div>
       );
     }
+
     return record.details;
   };
 
@@ -283,194 +356,312 @@ const PatientHistory = () => {
         .selected-row td {
           background-color: rgba(15, 118, 63, 0.15) !important;
         }
-          .acc-info-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1080;
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
 
-.acc-info-box {
-  width: 360px;
-  max-width: 100%;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-}
+        .history-action-bar {
+          min-width: 0;
+          white-space: nowrap;
+        }
 
-.acc-info-title {
-  height: 40px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  font-size: 14px;
-  font-weight: 700;
-}
+        .history-action-btn {
+          min-width: 72px;
+        }
 
-.acc-info-icon {
-  width: 42px;
-  height: 42px;
-  background: var(--primary, #0f763f);
-  color: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
+        .history-empty-tablet-box {
+          min-height: 180px;
+        }
 
-.acc-info-icon-danger {
-  background: #dc3545;
-}
+        .acc-info-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 1080;
+          background: rgba(0, 0, 0, 0.35);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+        }
 
-.acc-info-action-btn {
-  border-radius: 4px;
-  font-size: 0.82rem;
-}
+        .acc-info-box {
+          width: 360px;
+          max-width: 100%;
+          background: #fff;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .acc-info-title {
+          height: 40px;
+          background: #f8f9fa;
+          border-bottom: 1px solid #dee2e6;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 12px;
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .acc-info-icon {
+          width: 42px;
+          height: 42px;
+          background: var(--primary, #0f763f);
+          color: #fff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          flex-shrink: 0;
+        }
+
+        .acc-info-icon-danger {
+          background: #dc3545;
+        }
+
+        .acc-info-action-btn {
+          border-radius: 4px;
+          font-size: 0.82rem;
+        }
+
+        @media (max-width: 767.98px) {
+          .history-action-bar {
+            width: 100%;
+            justify-content: flex-end;
+            overflow-x: auto;
+          }
+
+          .history-action-btn {
+            min-width: 62px;
+          }
+        }
       `}</style>
 
-  
-
-      <div className="content doctor-content bg-light mt-n4 d-flex flex-column" style={{ minHeight: "100vh" }}>
+      <div
+        className="content doctor-content bg-light mt-n4 d-flex flex-column"
+        style={{ minHeight: "100vh" }}
+      >
         <div className="container-fluid px-3 px-lg-5 pt-0 flex-grow-1 d-flex flex-column">
           <div className="row flex-grow-1">
-            
             <DoctorSidebar />
 
             <div className="col-lg-8 col-xl-9 mt-4 mt-lg-0 d-flex flex-column">
               <div
                 className="card border-0 shadow-sm p-3 p-md-4 mb-4 d-flex flex-column h-100"
-                style={{ borderRadius: "12px", borderTop: "4px solid var(--primary, #0f763f)" }}
+                style={{
+                  borderRadius: "12px",
+                  borderTop: "4px solid var(--primary, #0f763f)",
+                }}
               >
-                {/* Profile Header */}
+                {/* profile header */}
                 <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 mb-4 pb-4 border-bottom text-center text-md-start position-relative">
-                  <div className="position-absolute top-0 end-0 d-none d-md-block">
-                   
-                  </div>
+                  <div className="position-absolute top-0 end-0 d-none d-md-block"></div>
 
                   <div
                     className="rounded-circle d-flex align-items-center justify-content-center bg-light shadow-sm flex-shrink-0"
-                    style={{ width: "90px", height: "90px", border: "2px solid var(--primary, #0f763f)" }}
+                    style={{
+                      width: "90px",
+                      height: "90px",
+                      border: "2px solid var(--primary, #0f763f)",
+                    }}
                   >
-                    <i className="isax isax-user fs-1 text-primary" style={{ color: "var(--primary, #0f763f)" }} />
+                    <i
+                      className="isax isax-user fs-1 text-primary"
+                      style={{ color: "var(--primary, #0f763f)" }}
+                    />
                   </div>
+
                   <div>
                     <div className="badge bg-light text-secondary border mb-2 px-2 py-1">
                       ID: {mockPatientProfile.hospitalNumber}
                     </div>
+
                     <h3 className="fw-bold mb-1 text-dark fs-3 fs-md-2">
-                      {mockPatientProfile.lastName}, {mockPatientProfile.firstName} {mockPatientProfile.middleName}
+                      {mockPatientProfile.lastName},{" "}
+                      {mockPatientProfile.firstName}{" "}
+                      {mockPatientProfile.middleName}
                     </h3>
+
                     <div className="text-muted small d-flex align-items-center justify-content-center justify-content-md-start gap-2">
                       <i className="isax isax-location text-danger" />
                       {mockPatientProfile.address}
                     </div>
                   </div>
                 </div>
-             
 
                 {/* sa patient hist container */}
                 <div className="d-flex flex-column flex-grow-1 mb-4">
                   <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-3 gap-3">
-                    <h5 className="fw-bold text-dark mb-0 text-center text-lg-start">PATIENT HISTORY</h5>
-                    
-                   <div className="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2 gap-md-3">
-  
-                      <button 
+                    <h5 className="fw-bold text-dark mb-0 text-center text-lg-start">
+                      PATIENT HISTORY
+                    </h5>
+
+                    <div className="history-action-bar d-flex flex-row align-items-center justify-content-end gap-2 ms-lg-auto">
+                      <button
                         onClick={() => setShowInformantModal(true)}
-                        className="btn btn-sm text-white fw-semibold rounded-1 shadow-sm px-5 border-0 w-100 w-md-auto"
+                        className="btn btn-sm text-white fw-semibold rounded-1 shadow-sm px-4 border-0 history-action-btn"
                         style={{ backgroundColor: "var(--primary, #0f763f)" }}
                       >
                         Informant
                       </button>
-                      
-                     <div className="d-flex align-items-center gap-1 w-100 w-md-auto">
-                        <button 
-                          onClick={() => {
-                            setIsEditing(false);
-                            setNewHistoryDate(getCurrentDateTime());
-                            setNewHistoryType("");
-                            setNewHistoryDetails("");
-                            setSelectedCheckboxes([]);
-                            if (availableHistoryTypes.length === 0) {
-                              setShowWarningModal(true); 
-                            } else {
-                              setShowAddHistoryModal(true);
-                            }
-                          }}
-                          className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark text-hover-primary flex-grow-1 flex-md-grow-0 ${availableHistoryTypes.length === 0 && !isEditing ? 'opacity-50' : ''}`}
-                          style={{ cursor: availableHistoryTypes.length === 0 && !isEditing ? "not-allowed" : "pointer" }}
-                        >
-                          <i className="isax isax-add-square"></i> <span className="d-none d-md-inline">Add</span>
-                        </button>
-                        
-                        <button 
-                          onClick={handleOpenEditHistory}
-                          disabled={!selectedRecordId}
-                          className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark flex-grow-1 flex-md-grow-0 ${selectedRecordId ? 'text-hover-primary' : 'opacity-50'}`}
-                          style={{ cursor: selectedRecordId ? "pointer" : "not-allowed" }}
-                        >
-                          <i className="isax isax-edit"></i> <span className="d-none d-md-inline">Edit</span>
-                        </button>
 
-                        <button 
-                          onClick={handleDeleteHistoryClick}
-                          disabled={!selectedRecordId}
-                          className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 flex-grow-1 flex-md-grow-0 ${selectedRecordId ? 'text-danger' : 'text-dark opacity-50'}`}
-                          style={{ cursor: selectedRecordId ? "pointer" : "not-allowed" }}
-                        >
-                          <i className="isax isax-trash"></i> <span className="d-none d-md-inline">Del</span>
-                        </button>
-                      </div>
+                      {!isTableEmpty && (
+                        <>
+                          <button
+                            onClick={handleOpenAddHistory}
+                            className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark text-hover-primary history-action-btn ${
+                              availableHistoryTypes.length === 0 && !isEditing
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            style={{
+                              cursor:
+                                availableHistoryTypes.length === 0 && !isEditing
+                                  ? "not-allowed"
+                                  : "pointer",
+                            }}
+                          >
+                            <i className="isax isax-add-square"></i>
+                            <span>Add</span>
+                          </button>
 
+                          <button
+                            onClick={handleOpenEditHistory}
+                            disabled={!selectedRecordId}
+                            className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 text-dark history-action-btn ${
+                              selectedRecordId
+                                ? "text-hover-primary"
+                                : "opacity-50"
+                            }`}
+                            style={{
+                              cursor: selectedRecordId
+                                ? "pointer"
+                                : "not-allowed",
+                            }}
+                          >
+                            <i className="isax isax-edit"></i>
+                            <span>Edit</span>
+                          </button>
+
+                          <button
+                            onClick={handleDeleteHistoryClick}
+                            disabled={!selectedRecordId}
+                            className={`btn btn-sm btn-light border border-secondary-subtle rounded-1 d-flex align-items-center justify-content-center gap-1 history-action-btn ${
+                              selectedRecordId
+                                ? "text-danger"
+                                : "text-dark opacity-50"
+                            }`}
+                            style={{
+                              cursor: selectedRecordId
+                                ? "pointer"
+                                : "not-allowed",
+                            }}
+                          >
+                            <i className="isax isax-trash"></i>
+                            <span>Del</span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
-                  
+
                   {/* table area */}
                   <div className="border rounded-0 flex-grow-1 bg-white">
-                    <table className="table table-hover align-middle mb-0" style={{ tableLayout: "auto" }}>
+                    <table
+                      className="table table-hover align-middle mb-0"
+                      style={{ tableLayout: "auto" }}
+                    >
                       <thead className="table-light">
                         <tr>
-                          <th className="fw-semibold text-secondary py-3 ps-3 border-bottom text-nowrap">History</th>
-                          {/* Hidden sa mobile, visible on medium+ na screen */}
-                          <th className="fw-semibold text-secondary py-3 border-bottom d-none d-md-table-cell">Details</th>
-                          <th className="fw-semibold text-secondary py-3 border-bottom text-nowrap d-none d-md-table-cell">Date Entered</th>
-                          <th className="fw-semibold text-secondary py-3 pe-3 border-bottom text-nowrap d-none d-lg-table-cell">Entry By</th>
-                          {/* Visible ONLY on mobile */}
-                          <th className="fw-semibold text-secondary py-3 pe-3 border-bottom text-center d-md-none">Action</th>
+                          <th className="fw-semibold text-secondary py-3 ps-3 border-bottom text-nowrap">
+                            History
+                          </th>
+                          <th className="fw-semibold text-secondary py-3 border-bottom d-none d-md-table-cell">
+                            Details
+                          </th>
+                          <th className="fw-semibold text-secondary py-3 border-bottom text-nowrap d-none d-md-table-cell">
+                            Date Entered
+                          </th>
+                          <th className="fw-semibold text-secondary py-3 pe-3 border-bottom text-nowrap d-none d-lg-table-cell">
+                            Entry By
+                          </th>
+                          <th className="fw-semibold text-secondary py-3 pe-3 border-bottom text-center d-md-none">
+                            Action
+                          </th>
                         </tr>
                       </thead>
+
                       <tbody>
+                        {isTableEmpty && (
+                          <tr>
+                            <td colSpan={5} className="py-5 text-center">
+                              <div className="history-empty-tablet-box d-none d-md-flex d-lg-none flex-column align-items-center justify-content-center gap-3">
+                                <div className="text-muted fw-semibold">
+                                  No history records added yet.
+                                </div>
+
+                                <button
+                                  onClick={handleOpenAddHistory}
+                                  className={`btn btn-sm text-white fw-semibold rounded-1 shadow-sm px-4 border-0 d-flex align-items-center justify-content-center gap-2 ${
+                                    availableHistoryTypes.length === 0 &&
+                                    !isEditing
+                                      ? "opacity-50"
+                                      : ""
+                                  }`}
+                                  style={{
+                                    backgroundColor:
+                                      "var(--primary, #0f763f)",
+                                    cursor:
+                                      availableHistoryTypes.length === 0 &&
+                                      !isEditing
+                                        ? "not-allowed"
+                                        : "pointer",
+                                  }}
+                                >
+                                  <i className="isax isax-add-square"></i>
+                                  <span>Add History</span>
+                                </button>
+                              </div>
+
+                              <div className="d-md-none d-lg-block text-muted fw-semibold">
+                                No history records added yet.
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+
                         {historyRecords.map((record) => (
-                          <tr 
+                          <tr
                             key={record.id}
                             onClick={() => setSelectedRecordId(record.id)}
                             onDoubleClick={() => {
                               setSelectedRecordId(record.id);
                               openEditModalForRecord(record);
                             }}
-                            className={selectedRecordId === record.id ? "selected-row" : ""}
+                            className={
+                              selectedRecordId === record.id
+                                ? "selected-row"
+                                : ""
+                            }
                             style={{ cursor: "pointer" }}
                           >
-                            <td className="ps-3 py-3 text-dark border-bottom-0 fw-bold">{record.history}</td>
-                            
+                            <td className="ps-3 py-3 text-dark border-bottom-0 fw-bold">
+                              {record.history}
+                            </td>
+
                             <td className="py-3 text-dark border-bottom-0 d-none d-md-table-cell">
                               {renderRecordDetails(record)}
                             </td>
 
-                            <td className="py-3 text-secondary small border-bottom-0 d-none d-md-table-cell">{record.dateEntered}</td>
-                            <td className="pe-3 py-3 text-secondary small border-bottom-0 d-none d-lg-table-cell">{record.entryBy}</td>
-                            
+                            <td className="py-3 text-secondary small border-bottom-0 d-none d-md-table-cell">
+                              {record.dateEntered}
+                            </td>
+
+                            <td className="pe-3 py-3 text-secondary small border-bottom-0 d-none d-lg-table-cell">
+                              {record.entryBy}
+                            </td>
+
                             <td className="pe-3 py-3 text-center border-bottom-0 d-md-none">
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setViewingRecord(record);
@@ -487,11 +678,44 @@ const PatientHistory = () => {
                         {savedInformant && (
                           <tr style={{ backgroundColor: "#e9ecef" }}>
                             <td colSpan={5} className="p-0 border-0">
-                              <div className="px-4 py-3 border-top d-flex flex-column gap-1" style={{ borderLeft: "4px solid var(--primary, #0f763f)" }}>
-                                <span className="fw-bold text-dark text-uppercase" style={{ fontSize: "0.8rem", letterSpacing: "0.5px" }}>Informant and Reliability</span>
-                                <div className="d-flex flex-wrap gap-4 mt-1 text-dark" style={{ fontSize: "0.95rem" }}>
-                                  <div><span className="text-secondary me-2">Informant:</span><span className="fw-bold">{savedInformant.type}</span></div>
-                                  <div><span className="text-secondary me-2">Reliability:</span><span className="fw-bold">{savedInformant.reliability} %</span></div>
+                              <div
+                                className="px-4 py-3 border-top d-flex flex-column gap-1"
+                                style={{
+                                  borderLeft:
+                                    "4px solid var(--primary, #0f763f)",
+                                }}
+                              >
+                                <span
+                                  className="fw-bold text-dark text-uppercase"
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    letterSpacing: "0.5px",
+                                  }}
+                                >
+                                  Informant and Reliability
+                                </span>
+
+                                <div
+                                  className="d-flex flex-wrap gap-4 mt-1 text-dark"
+                                  style={{ fontSize: "0.95rem" }}
+                                >
+                                  <div>
+                                    <span className="text-secondary me-2">
+                                      Informant:
+                                    </span>
+                                    <span className="fw-bold">
+                                      {savedInformant.type}
+                                    </span>
+                                  </div>
+
+                                  <div>
+                                    <span className="text-secondary me-2">
+                                      Reliability:
+                                    </span>
+                                    <span className="fw-bold">
+                                      {savedInformant.reliability} %
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             </td>
@@ -503,7 +727,6 @@ const PatientHistory = () => {
                 </div>
 
                 {/* tabs sa baba */}
-              
               </div>
             </div>
           </div>
@@ -512,48 +735,84 @@ const PatientHistory = () => {
 
       {/* --- para sa mobile view record modal --- */}
       {viewingRecord && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1060 }}>
+        <div
+          className="modal fade show d-block"
+          tabIndex={-1}
+          style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1060 }}
+        >
           <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable px-3">
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden' }}>
-              
-              <div className="modal-header border-0 py-3 d-flex align-items-center" style={{ backgroundColor: '#333b45' }}>
-                <h3 className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2" style={{ fontSize: '1.1rem', letterSpacing: '0.5px' }}>
-                  <i className="isax isax-document-text" style={{ fontSize: '1.5rem' }}></i>
+            <div
+              className="modal-content border-0 shadow-lg"
+              style={{ borderRadius: "8px", overflow: "hidden" }}
+            >
+              <div
+                className="modal-header border-0 py-3 d-flex align-items-center"
+                style={{ backgroundColor: "#333b45" }}
+              >
+                <h3
+                  className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2"
+                  style={{ fontSize: "1.1rem", letterSpacing: "0.5px" }}
+                >
+                  <i
+                    className="isax isax-document-text"
+                    style={{ fontSize: "1.5rem" }}
+                  ></i>
                   {viewingRecord.history}
                 </h3>
-                <button type="button" className="btn-close btn-close-white ms-auto" onClick={() => setViewingRecord(null)}></button>
+
+                <button
+                  type="button"
+                  className="btn-close btn-close-white ms-auto"
+                  onClick={() => setViewingRecord(null)}
+                ></button>
               </div>
-              
+
               <div className="modal-body p-4 bg-white">
                 <div className="mb-4">
-                  <label className="text-secondary small fw-bold text-uppercase mb-2">History Details</label>
+                  <label className="text-secondary small fw-bold text-uppercase mb-2">
+                    History Details
+                  </label>
+
                   <div className="p-3 bg-light rounded-2 border">
                     {renderRecordDetails(viewingRecord)}
                   </div>
                 </div>
 
                 <div className="row g-3">
-                   <div className="col-6">
-                      <label className="text-secondary small fw-bold text-uppercase mb-1">Date Entered</label>
-                      <p className="mb-0 text-dark fw-medium">{viewingRecord.dateEntered}</p>
-                   </div>
-                   <div className="col-6">
-                      <label className="text-secondary small fw-bold text-uppercase mb-1">Entry By</label>
-                      <p className="mb-0 text-dark fw-medium">{viewingRecord.entryBy}</p>
-                   </div>
+                  <div className="col-6">
+                    <label className="text-secondary small fw-bold text-uppercase mb-1">
+                      Date Entered
+                    </label>
+
+                    <p className="mb-0 text-dark fw-medium">
+                      {viewingRecord.dateEntered}
+                    </p>
+                  </div>
+
+                  <div className="col-6">
+                    <label className="text-secondary small fw-bold text-uppercase mb-1">
+                      Entry By
+                    </label>
+
+                    <p className="mb-0 text-dark fw-medium">
+                      {viewingRecord.entryBy}
+                    </p>
+                  </div>
                 </div>
               </div>
-              
-              <div className="modal-footer border-0 d-flex justify-content-end p-3" style={{ backgroundColor: '#e2e5e9' }}>
-                <button 
-                  type="button" 
-                  className="btn btn-secondary rounded-1 px-4 py-2 fw-medium" 
+
+              <div
+                className="modal-footer border-0 d-flex justify-content-end p-3"
+                style={{ backgroundColor: "#e2e5e9" }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-secondary rounded-1 px-4 py-2 fw-medium"
                   onClick={() => setViewingRecord(null)}
                 >
                   Close
                 </button>
               </div>
-
             </div>
           </div>
         </div>
@@ -561,25 +820,52 @@ const PatientHistory = () => {
 
       {/* --- sa pag add infoirmant modal --- */}
       {showInformantModal && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+        <div
+          className="modal fade show d-block"
+          tabIndex={-1}
+          style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+        >
           <div className="modal-dialog modal-dialog-centered px-3">
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden' }}>
-              <div className="modal-header border-0 py-3 d-flex align-items-center" style={{ backgroundColor: '#333b45' }}>
-                <h3 className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2" style={{ fontSize: '1.1rem', letterSpacing: '0.5px' }}>
-                  <i className="isax isax-add-square" style={{ fontSize: '1.75rem' }}></i>
+            <div
+              className="modal-content border-0 shadow-lg"
+              style={{ borderRadius: "8px", overflow: "hidden" }}
+            >
+              <div
+                className="modal-header border-0 py-3 d-flex align-items-center"
+                style={{ backgroundColor: "#333b45" }}
+              >
+                <h3
+                  className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2"
+                  style={{ fontSize: "1.1rem", letterSpacing: "0.5px" }}
+                >
+                  <i
+                    className="isax isax-add-square"
+                    style={{ fontSize: "1.75rem" }}
+                  ></i>
                   ADD INFORMANT AND RELIABILITY
                 </h3>
-                <button type="button" className="btn-close btn-close-white ms-auto" onClick={() => setShowInformantModal(false)}></button>
+
+                <button
+                  type="button"
+                  className="btn-close btn-close-white ms-auto"
+                  onClick={() => setShowInformantModal(false)}
+                ></button>
               </div>
-              
+
               <div className="modal-body p-4 bg-white">
                 <div className="mb-4">
-                  <label className="form-label text-dark fw-medium mb-1" style={{ fontSize: '0.95rem' }}>Informant</label>
-                  <select 
+                  <label
+                    className="form-label text-dark fw-medium mb-1"
+                    style={{ fontSize: "0.95rem" }}
+                  >
+                    Informant
+                  </label>
+
+                  <select
                     value={informantInput}
                     onChange={(e) => setInformantInput(e.target.value)}
-                    className="form-select rounded-1 shadow-none text-dark py-2" 
-                    style={{ border: '1px solid var(--primary, #0f763f)' }}
+                    className="form-select rounded-1 shadow-none text-dark py-2"
+                    style={{ border: "1px solid var(--primary, #0f763f)" }}
                   >
                     <option value="Family Member">Family Member</option>
                     <option value="Friend">Friend</option>
@@ -591,36 +877,55 @@ const PatientHistory = () => {
 
                   {informantInput === "Other" && (
                     <div className="mt-2">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder="Please specify..."
                         value={otherInformantInput}
-                        onChange={(e) => setOtherInformantInput(e.target.value)}
-                        className="form-control rounded-1 shadow-none text-dark py-2" 
-                        style={{ border: '1px solid var(--primary, #0f763f)' }}
+                        onChange={(e) =>
+                          setOtherInformantInput(e.target.value)
+                        }
+                        className="form-control rounded-1 shadow-none text-dark py-2"
+                        style={{
+                          border: "1px solid var(--primary, #0f763f)",
+                        }}
                         autoFocus
                       />
                     </div>
                   )}
                 </div>
-                
+
                 <div className="mb-2">
-                  <label className="form-label text-dark fw-medium mb-1" style={{ fontSize: '0.95rem' }}>Reliability %</label>
-                  <div style={{ maxWidth: '120px' }}>
-                    <input 
-                      type="number" 
+                  <label
+                    className="form-label text-dark fw-medium mb-1"
+                    style={{ fontSize: "0.95rem" }}
+                  >
+                    Reliability %
+                  </label>
+
+                  <div style={{ maxWidth: "120px" }}>
+                    <input
+                      type="number"
                       value={reliabilityInput}
                       onChange={(e) => setReliabilityInput(e.target.value)}
-                      className="form-control rounded-1 shadow-none text-dark py-2" 
-                      style={{ border: '1px solid var(--primary, #0f763f)' }}
-                      min="0" max="100" 
+                      className="form-control rounded-1 shadow-none text-dark py-2"
+                      style={{ border: "1px solid var(--primary, #0f763f)" }}
+                      min="0"
+                      max="100"
                     />
                   </div>
                 </div>
               </div>
-              
-              <div className="modal-footer border-0 d-flex justify-content-end p-3" style={{ backgroundColor: '#e2e5e9' }}>
-                <button type="button" className="btn text-white rounded-1 px-4 py-2 fw-medium" style={{ backgroundColor: 'var(--primary, #0f763f)' }} onClick={handleSaveInformant}>
+
+              <div
+                className="modal-footer border-0 d-flex justify-content-end p-3"
+                style={{ backgroundColor: "#e2e5e9" }}
+              >
+                <button
+                  type="button"
+                  className="btn text-white rounded-1 px-4 py-2 fw-medium"
+                  style={{ backgroundColor: "var(--primary, #0f763f)" }}
+                  onClick={handleSaveInformant}
+                >
                   Save and Close
                 </button>
               </div>
@@ -631,44 +936,81 @@ const PatientHistory = () => {
 
       {/* --- sa pagg add patient history modal --- */}
       {showAddHistoryModal && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+        <div
+          className="modal fade show d-block"
+          tabIndex={-1}
+          style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+        >
           <div className="modal-dialog modal-lg modal-dialog-centered px-3">
-            <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '8px', overflow: 'hidden' }}>
-              
-              <div className="modal-header border-0 py-3 d-flex align-items-center" style={{ backgroundColor: '#333b45' }}>
-                <h3 className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2" style={{ fontSize: '1.1rem', letterSpacing: '0.5px' }}>
-                  <i className={isEditing ? "isax isax-edit" : "isax isax-add-square"} style={{ fontSize: '1.75rem' }}></i>
+            <div
+              className="modal-content border-0 shadow-lg"
+              style={{ borderRadius: "8px", overflow: "hidden" }}
+            >
+              <div
+                className="modal-header border-0 py-3 d-flex align-items-center"
+                style={{ backgroundColor: "#333b45" }}
+              >
+                <h3
+                  className="modal-title text-white fw-bold m-0 d-flex align-items-center gap-2"
+                  style={{ fontSize: "1.1rem", letterSpacing: "0.5px" }}
+                >
+                  <i
+                    className={isEditing ? "isax isax-edit" : "isax isax-add-square"}
+                    style={{ fontSize: "1.75rem" }}
+                  ></i>
                   {isEditing ? "EDIT PATIENT HISTORY" : "ADD PATIENT HISTORY"}
                 </h3>
-                <button type="button" className="btn-close btn-close-white ms-auto" onClick={() => setShowAddHistoryModal(false)}></button>
+
+                <button
+                  type="button"
+                  className="btn-close btn-close-white ms-auto"
+                  onClick={() => setShowAddHistoryModal(false)}
+                ></button>
               </div>
-              
+
               <div className="modal-body p-4 bg-white">
                 <div className="row g-3 mb-4">
                   <div className="col-12 col-md-5 col-lg-4">
-                    <label className="form-label text-dark fw-medium mb-1" style={{ fontSize: '0.95rem' }}>Date/Time</label>
-                    <input 
-                      type="text" 
+                    <label
+                      className="form-label text-dark fw-medium mb-1"
+                      style={{ fontSize: "0.95rem" }}
+                    >
+                      Date/Time
+                    </label>
+
+                    <input
+                      type="text"
                       value={newHistoryDate}
                       onChange={(e) => setNewHistoryDate(e.target.value)}
-                      className="form-control rounded-1 shadow-none text-dark py-2 bg-light" 
-                      style={{ border: '1px solid var(--primary, #0f763f)' }}
+                      className="form-control rounded-1 shadow-none text-dark py-2 bg-light"
+                      style={{ border: "1px solid var(--primary, #0f763f)" }}
                       disabled
                     />
                   </div>
-                  
+
                   <div className="col-12 col-md-7 col-lg-8">
-                    <label className="form-label text-dark fw-medium mb-1" style={{ fontSize: '0.95rem' }}>Type of History</label>
-                    <select 
+                    <label
+                      className="form-label text-dark fw-medium mb-1"
+                      style={{ fontSize: "0.95rem" }}
+                    >
+                      Type of History
+                    </label>
+
+                    <select
                       value={newHistoryType}
                       onChange={(e) => setNewHistoryType(e.target.value)}
-                      className="form-select rounded-1 shadow-none text-dark py-2" 
-                      style={{ border: '1px solid var(--primary, #0f763f)' }}
+                      className="form-select rounded-1 shadow-none text-dark py-2"
+                      style={{ border: "1px solid var(--primary, #0f763f)" }}
                       disabled={isEditing}
                     >
-                      <option value="" disabled>Select...</option>
+                      <option value="" disabled>
+                        Select...
+                      </option>
+
                       {availableHistoryTypes.map((type) => (
-                        <option key={type} value={type}>{type}</option>
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -676,22 +1018,41 @@ const PatientHistory = () => {
 
                 {newHistoryType && (
                   <div className="mt-2 fade-in">
-                    <label className="form-label text-dark fw-medium mb-3" style={{ fontSize: '0.95rem' }}>History Details</label>
-                    
+                    <label
+                      className="form-label text-dark fw-medium mb-3"
+                      style={{ fontSize: "0.95rem" }}
+                    >
+                      History Details
+                    </label>
+
                     {hasCheckboxes && (
                       <div className="row g-3 mb-4 px-1">
-                        {getCheckboxOptions(newHistoryType).map(option => (
+                        {getCheckboxOptions(newHistoryType).map((option) => (
                           <div className="col-6 col-md-3" key={option}>
                             <div className="form-check d-flex align-items-center gap-1">
-                              <input 
-                                className="form-check-input shadow-none mt-0" 
-                                type="checkbox" 
-                                id={`check-${option}`} 
+                              <input
+                                className="form-check-input shadow-none mt-0"
+                                type="checkbox"
+                                id={`check-${option}`}
                                 checked={selectedCheckboxes.includes(option)}
                                 onChange={() => handleCheckboxToggle(option)}
-                                style={{ border: '1px solid var(--primary, #0f763f)', cursor: 'pointer', width: '18px', height: '18px' }}
+                                style={{
+                                  border:
+                                    "1px solid var(--primary, #0f763f)",
+                                  cursor: "pointer",
+                                  width: "18px",
+                                  height: "18px",
+                                }}
                               />
-                              <label className="form-check-label text-dark pt-1" htmlFor={`check-${option}`} style={{ cursor: 'pointer', fontSize: '0.9rem' }}>
+
+                              <label
+                                className="form-check-label text-dark pt-1"
+                                htmlFor={`check-${option}`}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "0.9rem",
+                                }}
+                              >
                                 {option}
                               </label>
                             </div>
@@ -700,139 +1061,151 @@ const PatientHistory = () => {
                       </div>
                     )}
 
-                    <textarea 
+                    <textarea
                       value={newHistoryDetails}
                       onChange={(e) => setNewHistoryDetails(e.target.value)}
-                      className="form-control rounded-1 shadow-none text-dark p-3" 
-                      style={{ 
-                        border: '1px solid var(--primary, #0f763f)', 
-                        resize: 'none',
-                        backgroundColor: isTextareaEnabled ? '#ffffff' : '#f8f9fa',
-                        cursor: isTextareaEnabled ? 'text' : 'not-allowed'
+                      className="form-control rounded-1 shadow-none text-dark p-3"
+                      style={{
+                        border: "1px solid var(--primary, #0f763f)",
+                        resize: "none",
+                        backgroundColor: isTextareaEnabled
+                          ? "#ffffff"
+                          : "#f8f9fa",
+                        cursor: isTextareaEnabled ? "text" : "not-allowed",
                       }}
                       rows={5}
                       placeholder={
-                        !hasCheckboxes ? "Enter history details..." : 
-                        isOtherChecked ? "Please specify other details..." : 
-                        "Check 'Other' above to enable typing..."
+                        !hasCheckboxes
+                          ? "Enter history details..."
+                          : isOtherChecked
+                          ? "Please specify other details..."
+                          : "Check 'Other' above to enable typing..."
                       }
-                      disabled={!isTextareaEnabled} 
+                      disabled={!isTextareaEnabled}
                     ></textarea>
                   </div>
                 )}
               </div>
-              
-              <div className="modal-footer border-0 d-flex justify-content-between align-items-center p-3" style={{ backgroundColor: '#e2e5e9' }}>
+
+              <div
+                className="modal-footer border-0 d-flex justify-content-between align-items-center p-3"
+                style={{ backgroundColor: "#e2e5e9" }}
+              >
                 <div className="text-danger small fw-bold">
-                  {isOtherChecked && newHistoryDetails.trim() === "" ? "Please specify details for 'Other'." : ""}
+                  {isOtherChecked && newHistoryDetails.trim() === ""
+                    ? "Please specify details for 'Other'."
+                    : ""}
                 </div>
-                
-                <button 
-                  type="button" 
-                  className={`btn text-white rounded-1 px-4 py-2 fw-medium ${isSaveHistoryDisabled ? 'opacity-50' : ''}`}
-                  style={{ backgroundColor: 'var(--primary, #0f763f)', cursor: isSaveHistoryDisabled ? 'not-allowed' : 'pointer' }} 
+
+                <button
+                  type="button"
+                  className={`btn text-white rounded-1 px-4 py-2 fw-medium ${
+                    isSaveHistoryDisabled ? "opacity-50" : ""
+                  }`}
+                  style={{
+                    backgroundColor: "var(--primary, #0f763f)",
+                    cursor: isSaveHistoryDisabled ? "not-allowed" : "pointer",
+                  }}
                   onClick={handleSaveHistory}
-                  disabled={isSaveHistoryDisabled} 
+                  disabled={isSaveHistoryDisabled}
                 >
                   Save and Close
                 </button>
               </div>
-
             </div>
           </div>
         </div>
       )}
 
-   {/* --- warning modal para sa gamit na ung lahat na history type --- */}
-{showWarningModal && (
-  <div className="acc-info-backdrop">
-    <div className="acc-info-box shadow-lg">
-      <div className="acc-info-title">
-        <span>Notice</span>
+      {/* --- warning modal para sa gamit na ung lahat na history type --- */}
+      {showWarningModal && (
+        <div className="acc-info-backdrop">
+          <div className="acc-info-box shadow-lg">
+            <div className="acc-info-title">
+              <span>Notice</span>
 
-        <button
-          type="button"
-          className="btn-close btn-close-sm"
-          onClick={() => setShowWarningModal(false)}
-        />
-      </div>
+              <button
+                type="button"
+                className="btn-close btn-close-sm"
+                onClick={() => setShowWarningModal(false)}
+              />
+            </div>
 
-      <div className="d-flex align-items-center gap-3 p-4">
-        <div className="acc-info-icon">
-          <i className="isax isax-info-circle"></i>
-        </div>
+            <div className="d-flex align-items-center gap-3 p-4">
+              <div className="acc-info-icon">
+                <i className="isax isax-info-circle"></i>
+              </div>
 
-        <div className="small fw-semibold text-dark">
-          All types of history already exist.
-        </div>
-      </div>
+              <div className="small fw-semibold text-dark">
+                All types of history already exist.
+              </div>
+            </div>
 
-      <div className="d-flex justify-content-end px-4 pb-3">
-        <button
-          type="button"
-          className="btn btn-sm text-white fw-bold px-4 acc-info-action-btn"
-          style={{
-            backgroundColor: "var(--primary, #0f763f)",
-            borderColor: "var(--primary, #0f763f)",
-          }}
-          onClick={() => setShowWarningModal(false)}
-        >
-          OK
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-
-     {/* --- confirm delete modal --- */}
-{showDeleteConfirmModal && (
-  <div className="acc-info-backdrop">
-    <div className="acc-info-box shadow-lg">
-      <div className="acc-info-title">
-        <span>Confirm Delete</span>
-
-        <button
-          type="button"
-          className="btn-close btn-close-sm"
-          onClick={() => setShowDeleteConfirmModal(false)}
-        />
-      </div>
-
-      <div className="d-flex align-items-center gap-3 p-4">
-        <div className="acc-info-icon acc-info-icon-danger">
-          <i className="isax isax-trash"></i>
-        </div>
-
-        <div>
-          <div className="fw-bold text-dark mb-1">Delete Record?</div>
-
-          <div className="small fw-semibold text-muted">
-            Are you sure you want to delete this history record?
+            <div className="d-flex justify-content-end px-4 pb-3">
+              <button
+                type="button"
+                className="btn btn-sm text-white fw-bold px-4 acc-info-action-btn"
+                style={{
+                  backgroundColor: "var(--primary, #0f763f)",
+                  borderColor: "var(--primary, #0f763f)",
+                }}
+                onClick={() => setShowWarningModal(false)}
+              >
+                OK
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="d-flex justify-content-end gap-2 px-4 pb-3">
-        <button
-          type="button"
-          className="btn btn-sm btn-light fw-bold px-4 border acc-info-action-btn"
-          onClick={() => setShowDeleteConfirmModal(false)}
-        >
-          Cancel
-        </button>
+      {/* --- confirm delete modal --- */}
+      {showDeleteConfirmModal && (
+        <div className="acc-info-backdrop">
+          <div className="acc-info-box shadow-lg">
+            <div className="acc-info-title">
+              <span>Confirm Delete</span>
 
-        <button
-          type="button"
-          className="btn btn-sm btn-danger fw-bold px-4 acc-info-action-btn"
-          onClick={confirmDeleteHistory}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+              <button
+                type="button"
+                className="btn-close btn-close-sm"
+                onClick={() => setShowDeleteConfirmModal(false)}
+              />
+            </div>
+
+            <div className="d-flex align-items-center gap-3 p-4">
+              <div className="acc-info-icon acc-info-icon-danger">
+                <i className="isax isax-trash"></i>
+              </div>
+
+              <div>
+                <div className="fw-bold text-dark mb-1">Delete Record?</div>
+
+                <div className="small fw-semibold text-muted">
+                  Are you sure you want to delete this history record?
+                </div>
+              </div>
+            </div>
+
+            <div className="d-flex justify-content-end gap-2 px-4 pb-3">
+              <button
+                type="button"
+                className="btn btn-sm btn-light fw-bold px-4 border acc-info-action-btn"
+                onClick={() => setShowDeleteConfirmModal(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-sm btn-danger fw-bold px-4 acc-info-action-btn"
+                onClick={confirmDeleteHistory}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
