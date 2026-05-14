@@ -1,5 +1,4 @@
 import DoctorSidebar from "@/components/custom-sidebar/doctorSidebar";
-import ImageWithBasePath from "@/components/image-with-base-path";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 
@@ -52,33 +51,21 @@ const PatientSignsAndSymptoms = () => {
     firstName: "REA",
     middleName: "MON",
     address: "111 Estanza, Legazpi City, Albay",
-    birthdate: "01/01/2000",
-    age: "26 Yrs. Old",
-    civilStatus: "Married",
-    gender: "Male",
-    employmentStatus: "Employed",
-    nationality: "Filipino",
-    religion: "Catholic",
-    seniorCitizenNo: "",
-    mssNo: "",
-    isPersonnel: "No",
   });
 
-  // pag manage kang modules
+  // States
   const [isEditing, setIsEditing] = useState(false);
   const [hasSavedData, setHasSavedData] = useState(false);
-
-  // sa custom modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // sa form state
+  // Form state
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [painChecked, setPainChecked] = useState(false);
   const [painValue, setPainValue] = useState("");
   const [otherChecked, setOtherChecked] = useState(false);
   const [otherValue, setOtherValue] = useState("");
 
-  // backup state para sa cancel functionality
+  // Backup state
   const [savedState, setSavedState] = useState<{
     selectedSymptoms: string[];
     painChecked: boolean;
@@ -89,6 +76,7 @@ const PatientSignsAndSymptoms = () => {
 
   useEffect(() => {
     const selectedPatientId = location.state?.selectedPatientId;
+
     if (selectedPatientId) {
       setTimeout(() => {}, 1500);
     }
@@ -114,7 +102,7 @@ const PatientSignsAndSymptoms = () => {
     return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
 
-  // form handlers
+  // Handlers
   const handleAdd = () => {
     setIsEditing(true);
   };
@@ -182,15 +170,11 @@ const PatientSignsAndSymptoms = () => {
     <>
       <style>
         {`
-          .text-hover-primary:hover {
-            color: var(--primary, #0f763f) !important;
-          }
-
           .acc-info-backdrop {
             position: fixed;
             inset: 0;
             z-index: 1080;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0,0,0,0.35);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -220,37 +204,13 @@ const PatientSignsAndSymptoms = () => {
           .acc-info-icon {
             width: 42px;
             height: 42px;
-            background: var(--primary, #0f763f);
+            background: #dc3545;
             color: #fff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
-            flex-shrink: 0;
-          }
-
-          .acc-info-icon-danger {
-            background: #dc3545;
-          }
-
-          .acc-info-action-btn {
-            border-radius: 4px;
-            font-size: 0.82rem;
-          }
-
-          @media (max-width: 575.98px) {
-            .acc-info-box {
-              width: 100%;
-            }
-
-            .acc-info-footer {
-              flex-direction: column;
-            }
-
-            .acc-info-footer button {
-              width: 100%;
-            }
           }
         `}
       </style>
@@ -271,8 +231,8 @@ const PatientSignsAndSymptoms = () => {
                   borderTop: "4px solid var(--primary, #0f763f)",
                 }}
               >
-                {/* patient profile header */}
-                <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 mb-4 pb-4 border-bottom text-center text-md-start position-relative">
+                {/* PATIENT PROFILE */}
+                <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-3 gap-md-4 mb-4 pb-4 border-bottom text-center text-md-start">
                   <div
                     className="rounded-circle d-flex align-items-center justify-content-center bg-light shadow-sm flex-shrink-0"
                     style={{
@@ -282,7 +242,7 @@ const PatientSignsAndSymptoms = () => {
                     }}
                   >
                     <i
-                      className="isax isax-user fs-1 text-primary"
+                      className="isax isax-user fs-1"
                       style={{ color: "var(--primary, #0f763f)" }}
                     />
                   </div>
@@ -292,141 +252,114 @@ const PatientSignsAndSymptoms = () => {
                       ID: {mockPatientProfile.hospitalNumber}
                     </div>
 
-                    <h3 className="fw-bold mb-1 text-dark fs-3 fs-md-2">
+                    <h3 className="fw-bold mb-1 text-dark">
                       {mockPatientProfile.lastName},{" "}
                       {mockPatientProfile.firstName}{" "}
                       {mockPatientProfile.middleName}
                     </h3>
 
-                    <div className="text-muted small d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                    <div className="text-muted small d-flex align-items-center gap-2">
                       <i className="isax isax-location text-danger" />
                       {mockPatientProfile.address}
                     </div>
                   </div>
                 </div>
 
+                {/* CONTENT */}
                 <div className="d-flex flex-column flex-grow-1 mb-4">
-                  <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-3 gap-3">
-                    <h5 className="fw-bold text-dark mb-0 text-center text-lg-start text-uppercase">
+                  {/* HEADER */}
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h5 className="fw-bold text-dark mb-0 text-uppercase">
                       Pertinent Sign and Symptoms
                     </h5>
 
-                    <div
-                      className="d-flex flex-wrap rounded-1"
-                      role="group"
-                      style={{ gap: "4px", transition: "all 0.3s ease" }}
-                    >
-                      <button
-                        onClick={handleAdd}
-                        disabled={isEditing || hasSavedData}
-                        className={`btn btn-sm border-secondary-subtle d-flex align-items-center justify-content-center gap-2 px-3 py-2 ${
-                          isEditing || hasSavedData
-                            ? "bg-light text-muted opacity-50"
-                            : "bg-white text-dark fw-bold"
-                        }`}
-                        style={{
-                          borderRadius: "3px",
-                          cursor:
-                            isEditing || hasSavedData
-                              ? "not-allowed"
-                              : "pointer",
-                        }}
+                    {(hasSavedData || isEditing) && (
+                      <div
+                        className="d-flex flex-wrap justify-content-end"
+                        style={{ gap: "4px" }}
                       >
-                        <i className="isax isax-add-square"></i>
-                        Add
-                      </button>
-
-                      <button
-                        onClick={handleEdit}
-                        disabled={!hasSavedData || isEditing}
-                        className={`btn btn-sm border-secondary-subtle d-flex align-items-center justify-content-center gap-2 px-3 py-2 ${
-                          !hasSavedData || isEditing
-                            ? "bg-light text-muted opacity-50"
-                            : "bg-white text-dark fw-bold"
-                        }`}
-                        style={{
-                          borderRadius: "3px",
-                          cursor:
+                        <button
+                          onClick={handleEdit}
+                          disabled={!hasSavedData || isEditing}
+                          className={`btn btn-sm border-secondary-subtle d-flex align-items-center gap-2 px-3 py-2 ${
                             !hasSavedData || isEditing
-                              ? "not-allowed"
-                              : "pointer",
-                        }}
-                      >
-                        <i className="isax isax-edit"></i>
-                        Edit
-                      </button>
+                              ? "bg-light text-muted opacity-50"
+                              : "bg-white text-dark fw-bold"
+                          }`}
+                          style={{
+                            borderRadius: "3px",
+                          }}
+                        >
+                          <i className="isax isax-edit"></i>
+                          Edit
+                        </button>
 
-                      <button
-                        onClick={handleSave}
-                        disabled={!isEditing}
-                        className={`btn btn-sm border-secondary-subtle d-flex align-items-center justify-content-center gap-2 px-3 py-2 ${
-                          !isEditing
-                            ? "bg-light text-muted opacity-50"
-                            : "text-white fw-bold shadow-sm"
-                        }`}
-                        style={{
-                          borderRadius: "3px",
-                          cursor: !isEditing ? "not-allowed" : "pointer",
-                          backgroundColor: isEditing
-                            ? "var(--primary, #0f763f)"
-                            : undefined,
-                          borderColor: isEditing
-                            ? "var(--primary, #0f763f)"
-                            : undefined,
-                        }}
-                      >
-                        <i className="isax isax-save-2"></i>
-                        Save
-                      </button>
+                        <button
+                          onClick={handleSave}
+                          disabled={!isEditing}
+                          className={`btn btn-sm d-flex align-items-center gap-2 px-3 py-2 ${
+                            !isEditing
+                              ? "bg-light text-muted opacity-50"
+                              : "text-white fw-bold"
+                          }`}
+                          style={{
+                            borderRadius: "3px",
+                            backgroundColor: isEditing
+                              ? "var(--primary, #0f763f)"
+                              : undefined,
+                            border: isEditing
+                              ? "1px solid var(--primary, #0f763f)"
+                              : undefined,
+                          }}
+                        >
+                          <i className="isax isax-save-2"></i>
+                          Save
+                        </button>
 
-                      <button
-                        onClick={handleCancel}
-                        disabled={!isEditing}
-                        className={`btn btn-sm border-secondary-subtle d-flex align-items-center justify-content-center gap-2 px-3 py-2 ${
-                          !isEditing
-                            ? "bg-light text-muted opacity-50"
-                            : "bg-white text-dark fw-bold"
-                        }`}
-                        style={{
-                          borderRadius: "3px",
-                          cursor: !isEditing ? "not-allowed" : "pointer",
-                        }}
-                      >
-                        <i className="isax isax-undo"></i>
-                        Cancel
-                      </button>
+                        <button
+                          onClick={handleCancel}
+                          disabled={!isEditing}
+                          className={`btn btn-sm border-secondary-subtle d-flex align-items-center gap-2 px-3 py-2 ${
+                            !isEditing
+                              ? "bg-light text-muted opacity-50"
+                              : "bg-white text-dark fw-bold"
+                          }`}
+                          style={{
+                            borderRadius: "3px",
+                          }}
+                        >
+                          <i className="isax isax-undo"></i>
+                          Cancel
+                        </button>
 
-                      <button
-                        onClick={handleDeleteClick}
-                        disabled={!hasSavedData || isEditing}
-                        className={`btn btn-sm border-secondary-subtle d-flex align-items-center justify-content-center gap-2 px-3 py-2 ${
-                          !hasSavedData || isEditing
-                            ? "bg-light text-muted opacity-50"
-                            : "bg-white text-danger fw-bold"
-                        }`}
-                        style={{
-                          borderRadius: "3px",
-                          cursor:
+                        <button
+                          onClick={handleDeleteClick}
+                          disabled={!hasSavedData || isEditing}
+                          className={`btn btn-sm border-secondary-subtle d-flex align-items-center gap-2 px-3 py-2 ${
                             !hasSavedData || isEditing
-                              ? "not-allowed"
-                              : "pointer",
-                        }}
-                      >
-                        <i className="isax isax-trash"></i>
-                        Del
-                      </button>
-                    </div>
+                              ? "bg-light text-muted opacity-50"
+                              : "bg-white text-danger fw-bold"
+                          }`}
+                          style={{
+                            borderRadius: "3px",
+                          }}
+                        >
+                          <i className="isax isax-trash"></i>
+                          Del
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="border rounded-0 flex-grow-1 bg-white d-flex flex-column shadow-sm">
+                  {/* TABLE */}
+                  <div className="border rounded-0 flex-grow-1 bg-white shadow-sm">
                     <table
                       className="table table-hover align-middle mb-0"
-                      style={{ tableLayout: "auto" }}
                     >
                       <thead className="table-light">
                         <tr>
                           <th
-                            className="fw-semibold text-secondary py-3 ps-3 border-bottom text-nowrap"
+                            className="fw-semibold py-3 ps-3 border-bottom"
                             style={{ color: "var(--primary, #0f763f)" }}
                           >
                             Signs and Symptoms Checklist
@@ -440,14 +373,25 @@ const PatientSignsAndSymptoms = () => {
                             {!isEditing && !hasSavedData ? (
                               <div className="d-flex flex-column align-items-center justify-content-center text-muted py-5">
                                 <i className="isax isax-document-text fs-1 mb-2 opacity-50"></i>
-                                <p className="mb-0">
+
+                                <p className="mb-1">
                                   No pertinent signs and symptoms recorded.
                                 </p>
-                                <p className="small">
-                                  Click{" "}
-                                  <strong className="text-dark">Add</strong> in
-                                  the toolbar to begin.
-                                </p>
+
+                                <button
+                                  onClick={handleAdd}
+                                  className="btn btn-sm mt-3 text-white fw-bold d-flex align-items-center gap-2 px-3 py-2"
+                                  style={{
+                                    borderRadius: "3px",
+                                    backgroundColor:
+                                      "var(--primary, #0f763f)",
+                                    border:
+                                      "1px solid var(--primary, #0f763f)",
+                                  }}
+                                >
+                                  <i className="isax isax-add-square"></i>
+                                  Add Signs & Symptoms
+                                </button>
                               </div>
                             ) : (
                               <div className="row g-2">
@@ -471,11 +415,6 @@ const PatientSignsAndSymptoms = () => {
                                         style={{
                                           border:
                                             "1px solid var(--primary, #0f763f)",
-                                          cursor: isEditing
-                                            ? "pointer"
-                                            : "not-allowed",
-                                          width: "16px",
-                                          height: "16px",
                                         }}
                                       />
 
@@ -484,9 +423,6 @@ const PatientSignsAndSymptoms = () => {
                                         htmlFor={`symptom-${index}`}
                                         style={{
                                           fontSize: "0.85rem",
-                                          cursor: isEditing
-                                            ? "pointer"
-                                            : "not-allowed",
                                         }}
                                       >
                                         {symptom}
@@ -495,6 +431,7 @@ const PatientSignsAndSymptoms = () => {
                                   </div>
                                 ))}
 
+                                {/* PAIN */}
                                 <div className="col-12 mt-4">
                                   <div className="form-check d-flex align-items-center gap-1 mb-2">
                                     <input
@@ -505,29 +442,15 @@ const PatientSignsAndSymptoms = () => {
                                       onChange={(e) => {
                                         setPainChecked(e.target.checked);
 
-                                        if (!e.target.checked) setPainValue("");
+                                        if (!e.target.checked)
+                                          setPainValue("");
                                       }}
                                       disabled={!isEditing}
-                                      style={{
-                                        border:
-                                          "1px solid var(--primary, #0f763f)",
-                                        cursor: isEditing
-                                          ? "pointer"
-                                          : "not-allowed",
-                                        width: "16px",
-                                        height: "16px",
-                                      }}
                                     />
 
                                     <label
-                                      className="form-check-label text-dark pt-1 fw-bold"
+                                      className="form-check-label fw-bold"
                                       htmlFor="check-pain"
-                                      style={{
-                                        fontSize: "0.85rem",
-                                        cursor: isEditing
-                                          ? "pointer"
-                                          : "not-allowed",
-                                      }}
                                     >
                                       Pain
                                     </label>
@@ -543,15 +466,11 @@ const PatientSignsAndSymptoms = () => {
                                     disabled={!painChecked || !isEditing}
                                     style={{
                                       borderColor: "var(--primary, #0f763f)",
-                                      backgroundColor:
-                                        !painChecked || !isEditing
-                                          ? "#f8f9fa"
-                                          : "#ffffff",
-                                      fontSize: "0.9rem",
                                     }}
                                   />
                                 </div>
 
+                                {/* OTHER */}
                                 <div className="col-12 mt-3">
                                   <div className="form-check d-flex align-items-center gap-1 mb-2">
                                     <input
@@ -562,29 +481,15 @@ const PatientSignsAndSymptoms = () => {
                                       onChange={(e) => {
                                         setOtherChecked(e.target.checked);
 
-                                        if (!e.target.checked) setOtherValue("");
+                                        if (!e.target.checked)
+                                          setOtherValue("");
                                       }}
                                       disabled={!isEditing}
-                                      style={{
-                                        border:
-                                          "1px solid var(--primary, #0f763f)",
-                                        cursor: isEditing
-                                          ? "pointer"
-                                          : "not-allowed",
-                                        width: "16px",
-                                        height: "16px",
-                                      }}
                                     />
 
                                     <label
-                                      className="form-check-label text-dark pt-1 fw-bold"
+                                      className="form-check-label fw-bold"
                                       htmlFor="check-other"
-                                      style={{
-                                        fontSize: "0.85rem",
-                                        cursor: isEditing
-                                          ? "pointer"
-                                          : "not-allowed",
-                                      }}
                                     >
                                       Other
                                     </label>
@@ -595,16 +500,13 @@ const PatientSignsAndSymptoms = () => {
                                     className="form-control rounded-1 shadow-none"
                                     value={otherValue}
                                     onChange={(e) =>
-                                      setOtherValue(e.target.value.toUpperCase())
+                                      setOtherValue(
+                                        e.target.value.toUpperCase()
+                                      )
                                     }
                                     disabled={!otherChecked || !isEditing}
                                     style={{
                                       borderColor: "var(--primary, #0f763f)",
-                                      backgroundColor:
-                                        !otherChecked || !isEditing
-                                          ? "#f8f9fa"
-                                          : "#ffffff",
-                                      fontSize: "0.9rem",
                                     }}
                                   />
                                 </div>
@@ -622,7 +524,7 @@ const PatientSignsAndSymptoms = () => {
         </div>
       </div>
 
-      {/* delete confirmation modal */}
+      {/* DELETE MODAL */}
       {showDeleteModal && (
         <div className="acc-info-backdrop">
           <div className="acc-info-box shadow-lg">
@@ -637,12 +539,14 @@ const PatientSignsAndSymptoms = () => {
             </div>
 
             <div className="d-flex align-items-center gap-3 p-4">
-              <div className="acc-info-icon acc-info-icon-danger">
+              <div className="acc-info-icon">
                 <i className="isax isax-trash"></i>
               </div>
 
               <div>
-                <div className="fw-bold text-dark mb-1">Clear Form?</div>
+                <div className="fw-bold text-dark mb-1">
+                  Clear Form?
+                </div>
 
                 <div className="small fw-semibold text-muted">
                   Are you sure you want to clear the current signs and symptoms
@@ -651,10 +555,10 @@ const PatientSignsAndSymptoms = () => {
               </div>
             </div>
 
-            <div className="acc-info-footer d-flex justify-content-end gap-2 px-4 pb-3">
+            <div className="d-flex justify-content-end gap-2 px-4 pb-3">
               <button
                 type="button"
-                className="btn btn-sm btn-light fw-bold px-4 border acc-info-action-btn"
+                className="btn btn-sm btn-light fw-bold px-4 border"
                 onClick={() => setShowDeleteModal(false)}
               >
                 Cancel
@@ -662,7 +566,7 @@ const PatientSignsAndSymptoms = () => {
 
               <button
                 type="button"
-                className="btn btn-sm btn-danger fw-bold px-4 acc-info-action-btn"
+                className="btn btn-sm btn-danger fw-bold px-4"
                 onClick={confirmDelete}
               >
                 Delete
